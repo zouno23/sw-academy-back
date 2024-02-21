@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
   FullName: { type: String, required: true },
-  Email: { type: String, required: true, trim: true },
+  Email: { type: String, required: true, trim: true, unique: true },
   Role: {
     type: String,
     required: true,
@@ -12,7 +12,10 @@ const userSchema = new Schema({
     default: "Student",
   },
   Password: { type: String, required: true },
+  GoogleId: { type: String, default: null },
+  code: { type: String },
 });
+userSchema.index({ code: 1 }, { expireAfterSeconds: 3600 });
 
 const studentSchema = new Schema({
   ...userSchema.obj,
