@@ -15,14 +15,15 @@ const students = users.Student;
 module.exports.signup_post = async (req, res) => {
   try {
     const student = await students.create(req.body);
-    const token = TokenGenerator(student._id);
+    const token = TokenGenerator(student._id, student.Role);
     res.setHeader("jwt", token);
     student.save;
     res
       .status(200)
       .json({ message: `successful account creation for ${student.FullName}` });
   } catch (err) {
-    res.status(500).json({ message: "Server error", details: err });
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -40,7 +41,7 @@ module.exports.login_post = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(404).json({ message: "incorrect password" });
     }
-    const token = TokenGenerator(user._id);
+    const token = TokenGenerator(user._id, user.Role);
     res.setHeader("jwt", token);
     return res
       .status(200)
@@ -70,7 +71,7 @@ module.exports.signin_oauth_google = async (req, res) => {
     });
     if (isStudentThere) {
       //if account does exist we grant access to the user
-      const token = TokenGenerator(isStudentThere._id);
+      const token = TokenGenerator(isStudentThere._id, isStudentThere.Role);
       res.setHeader("jwt", token);
       return res.status(200).json({ message: "successfull login" });
     }
@@ -80,6 +81,7 @@ module.exports.signin_oauth_google = async (req, res) => {
       Email: googleprofile.data.email,
       Password: googleprofile.data.id,
       GoogleId: googleprofile.data.id,
+      Picture: googleprofile.data.picture,
     });
     googlestudent.save;
     const token = TokenGenerator(isStudentThere._id);
@@ -119,7 +121,7 @@ module.exports.VerifCode = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "code invalid" });
     }
-    const token = TokenGenerator(user._id);
+    const token = TokenGenerator(user._id, user.Role);
     res.setHeader("jwt", token);
     return res.status(200).json({ message: "code valid" });
   } catch (error) {

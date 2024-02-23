@@ -11,6 +11,7 @@ const userSchema = new Schema({
     enum: ["SuperAdmin", "Admin", "Assistant", "Teacher", "Student"],
     default: "Student",
   },
+  Picture: { type: String },
   Password: { type: String, required: true },
   GoogleId: { type: String, default: null },
   code: { type: String },
@@ -26,6 +27,16 @@ const studentSchema = new Schema({
     default: function () {
       return generateId();
     },
+  },
+  Lessons: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }] },
+  CoursePacks: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" }],
+  },
+  Certificates: {
+    type: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "CourseCertificate" },
+      { type: mongoose.Schema.Types.ObjectId, ref: "LessonCertificate" },
+    ],
   },
 });
 
@@ -45,6 +56,7 @@ const teacherSchema = new Schema({
       return generateId();
     },
   },
+  Lessons: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "lesson" }] },
 });
 
 teacherSchema.pre("save", async function (next) {

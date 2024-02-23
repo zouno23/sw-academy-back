@@ -1,10 +1,5 @@
 const { Router } = require("express");
 const authcontrollers = require("../controllers/authcontroller");
-const { GoogleClientId } = require("../core/env");
-const jwt = require("jsonwebtoken");
-const { TokenSecretCode } = require("../core/env");
-const users = require("../models/users");
-const { TokenVerification } = require("../middlewares/TokenHandeler");
 
 const router = new Router();
 
