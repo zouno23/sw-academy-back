@@ -1,0 +1,7 @@
+# Node.js
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state
+
+.env

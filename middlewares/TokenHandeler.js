@@ -4,7 +4,7 @@ const { TokenSecretCode } = require("../core/env");
 
 module.exports.TokenVerification = async (req, res, next) => {
   try {
-    const token = req.cookies.jwt;
+    const token = req.headers.authorization.split(" ")[1];
     if (!token) {
       return res.status(401).json({ msg: "No auth token, access denied" });
     }
@@ -17,7 +17,7 @@ module.exports.TokenVerification = async (req, res, next) => {
     res.locals.userRole = verified.role;
     res.locals.userId = verified.identifier;
     next();
-  } catch (err) {
+  } catch (error) {
     res.status(500).json({ error: err });
     console.log(err);
   }
