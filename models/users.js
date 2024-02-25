@@ -28,9 +28,11 @@ const studentSchema = new Schema({
       return generateId();
     },
   },
-  Lessons: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }] },
+  Lessons: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student_Lesson" }],
+  },
   CoursePacks: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student_CoursePack" }],
   },
   Certificates: {
     type: [

@@ -15,13 +15,15 @@ module.exports.GetUserData = async (req, res, next) => {
     if (userRole == "Student") {
       User = await students
         .findById(userId)
-        .populate("Lessons")
-        .populate("CoursePacks")
+        .populate({ path: "Lessons", populate: { path: "Lesson" } })
+        .populate({ path: "CoursePacks", populate: { path: "CoursePack" } })
         .populate("Certificates");
     } else if (userRole == "Teacher") {
       User = await teachers.findById(userId).populate("Lessons");
     }
+
     res.locals.User = User;
+
     next();
   } catch (error) {
     console.log(error);
