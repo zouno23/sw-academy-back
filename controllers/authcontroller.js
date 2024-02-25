@@ -133,7 +133,7 @@ module.exports.resetPass = async (req, res) => {
   try {
     const { Password } = req.body;
     // Vérifier la validité du token
-    const token = req.headers.authorization;
+    const token = req.headers.authorization.split(" ")[1];
     const tokenverified = jwt.verify(token, TokenSecretCode);
     const user = await students.findOne({ _id: tokenverified.identifier });
 
