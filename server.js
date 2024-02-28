@@ -24,7 +24,7 @@ app.use(helmet());
 app.use(corsSetup);
 app.use(setCache);
 
-const dbURI = "mongodb://localhost:27017/sw-Academy";
+const dbURI = "mongodb://localhost:27017/sw-academy";
 
 mongoose
   .connect(dbURI)

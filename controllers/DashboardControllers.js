@@ -12,15 +12,14 @@ const students = users.Student;
 module.exports.GetUserData = async (req, res) => {
   try {
     const User = res.locals.User;
-
     return res.status(200).json({
       message: "user found successfully",
       deatils: "Response data will be FullName,Email, ID & Picture as Result",
       Result: {
-        FullName: User.FullName,
-        Email: User.Email,
-        Id: User._id,
-        Picture: User.Picture,
+        FullName: User?.FullName,
+        Email: User?.Email,
+        Id: User?._id,
+        Picture: User?.Picture,
       },
     });
   } catch (error) {
@@ -38,9 +37,9 @@ module.exports.GetUserStats = async (req, res) => {
       details:
         "Response data will be Lessons , CoursePacks , Certificates as Result",
       Result: {
-        Lessons: User.Lessons.length,
-        CoursePacks: User.CoursePacks.length,
-        Certificates: User.Certificates.length,
+        Lessons: User?.Lessons.length,
+        CoursePacks: User?.CoursePacks.length,
+        Certificates: User?.Certificates.length,
       },
     });
   } catch (error) {
@@ -86,7 +85,7 @@ module.exports.GetStudentCompletedLessonsByMonth = async (req, res) => {
       Result: LessonsPerMonth,
     });
   } catch (error) {
-    console.log(error);
+    console.log("lessons per month error");
     return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -21,9 +21,7 @@ module.exports.GetUserData = async (req, res, next) => {
     } else if (userRole == "Teacher") {
       User = await teachers.findById(userId).populate("Lessons");
     }
-
     res.locals.User = User;
-
     next();
   } catch (error) {
     console.log(error);

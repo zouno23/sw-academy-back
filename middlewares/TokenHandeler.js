@@ -15,7 +15,7 @@ module.exports.TokenVerification = async (req, res, next) => {
         .json({ msg: "Token verification failed, authorization denied" });
     }
     res.locals.userRole = verified.role;
-    res.locals.userId = verified.identifier;    
+    res.locals.userId = verified.identifier;
     next();
   } catch (error) {
     res.status(500).json({ error: err });
