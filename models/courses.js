@@ -11,9 +11,7 @@ const lessonSchema = new Schema({
   IsLive: { type: Boolean },
   IsPublished: { type: Boolean },
   course: { type: { type: mongoose.Schema.Types.ObjectId, ref: "course" } },
-  Teacher: {
-    type: { type: mongoose.Schema.Types.ObjectId, ref: "teacher" },
-  },
+  Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "teacher" },
 });
 
 const courseSchema = new Schema({
@@ -33,8 +31,63 @@ const coursePackSchema = new Schema({
   },
 });
 
+const StudentCoursePackSchema = new Schema({
+  Student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
+    required: true,
+  },
+  CoursePack: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "CoursePack",
+    required: true,
+  },
+  DateStarted: { type: Date, default: Date.now() },
+  Progress: {
+    type: Number,
+    min: 0,
+    max: 100,
+    default: 0,
+  },
+  IsCompleted: { type: Boolean, default: false },
+  DateCompleted: { Date },
+});
+
+const StudentLessonSchema = new Schema({
+  Student: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
+    required: true,
+  },
+  Lesson: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Lesson",
+    required: true,
+  },
+  DateStarted: { type: Date, default: Date.now() },
+  Progress: {
+    type: Number,
+    min: 0,
+    max: 100,
+    default: 0,
+  },
+  IsCompleted: { type: Boolean, default: false },
+  DateCompleted: { type: Date, defaul: null },
+});
+
 const Lesson = mongoose.model("Lesson", lessonSchema);
 const Course = mongoose.model("Course", courseSchema);
 const CoursePack = mongoose.model("CoursePack", coursePackSchema);
+const Student_Lesson = mongoose.model("Student_Lesson", StudentLessonSchema);
+const Student_CoursePack = mongoose.model(
+  "Student_CoursePack",
+  StudentCoursePackSchema
+);
 
-module.exports = { Lesson, Course, CoursePack };
+module.exports = {
+  Lesson,
+  Course,
+  CoursePack,
+  Student_CoursePack,
+  Student_Lesson,
+};
