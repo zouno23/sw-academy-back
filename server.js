@@ -6,6 +6,8 @@ const helmet = require("helmet");
 const corsSetup = require("./middlewares/CorsSetup");
 const setCache = require("./middlewares/Caching");
 const authroutes = require("./routers/authroutes");
+const userRoutes = require("./routers/userRoutes");
+
 const DashboardRoutes = require("./routers/DashboardRoutes");
 const TestRoutes = require("./routers/TestRoutes");
 
@@ -22,7 +24,7 @@ app.use(helmet());
 app.use(corsSetup);
 app.use(setCache);
 
-const dbURI = "mongodb://localhost:27017/sw-academy";
+const dbURI = "mongodb://localhost:27017/sw-Academy";
 
 mongoose
   .connect(dbURI)
@@ -36,5 +38,7 @@ app.use(express.json());
 
 //routes
 app.use(authroutes);
+app.use(userRoutes);
+
 app.use(DashboardRoutes);
 app.use(TestRoutes);
