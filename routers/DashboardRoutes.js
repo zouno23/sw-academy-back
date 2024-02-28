@@ -22,7 +22,7 @@ router.get(
 router.get(
   "/Dashboard/products",
   TokenVerification,
-  GetUserData,
+  GetLessonsByStudent,
   DashboardControllers.GetUserProducts
 );
 

@@ -35,11 +35,11 @@ module.exports.GetUserStats = async (req, res) => {
 
     return res.status(200).json({
       message: "Stats found successfully",
-      deatils:
+      details:
         "Response data will be Lessons , CoursePacks , Certificates as Result",
       Result: {
         Lessons: User.Lessons.length,
-        CoursePack: User.CoursePacks.length,
+        CoursePacks: User.CoursePacks.length,
         Certificates: User.Certificates.length,
       },
     });
@@ -51,21 +51,12 @@ module.exports.GetUserStats = async (req, res) => {
 
 module.exports.GetUserProducts = async (req, res) => {
   try {
-    const User = res.locals.User;
-    let Lessons = [];
-    let CoursePacks = [];
-    for (const item of User.CoursePacks) {
-      CoursePacks.push(item.CoursePack);
-    }
-    for (const item of User.Lessons) {
-      Lessons.push(item.Lesson);
-    }
+    const Lessons = res.locals.Lessons;
     return res.status(200).json({
       message: "Products found successfully",
       deatils: "Response data will be Lessons , CoursePacks as Result",
       Result: {
         Lessons: Lessons,
-        CoursePack: CoursePacks,
       },
     });
   } catch (error) {

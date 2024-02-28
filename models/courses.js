@@ -11,9 +11,7 @@ const lessonSchema = new Schema({
   IsLive: { type: Boolean },
   IsPublished: { type: Boolean },
   course: { type: { type: mongoose.Schema.Types.ObjectId, ref: "course" } },
-  Teacher: {
-    type: { type: mongoose.Schema.Types.ObjectId, ref: "teacher" },
-  },
+  Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "teacher" },
 });
 
 const courseSchema = new Schema({
@@ -74,7 +72,7 @@ const StudentLessonSchema = new Schema({
     default: 0,
   },
   IsCompleted: { type: Boolean, default: false },
-  DateCompleted: { Date },
+  DateCompleted: { type: Date, defaul: null },
 });
 
 const Lesson = mongoose.model("Lesson", lessonSchema);

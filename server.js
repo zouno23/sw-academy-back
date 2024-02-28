@@ -7,6 +7,7 @@ const corsSetup = require("./middlewares/CorsSetup");
 const setCache = require("./middlewares/Caching");
 const authroutes = require("./routers/authroutes");
 const DashboardRoutes = require("./routers/DashboardRoutes");
+const TestRoutes = require("./routers/TestRoutes");
 
 const corsOptions = {
   origin: "http://localhost:3000",
@@ -36,3 +37,4 @@ app.use(express.json());
 //routes
 app.use(authroutes);
 app.use(DashboardRoutes);
+app.use(TestRoutes);
