@@ -1,10 +1,13 @@
 const users = require("../models/users");
 
+
+
+
 module.exports.UpdateUser = async (req, res) => {
   try {
     const userId = res.locals.userId;
     const userRole = res.locals.userRole;
-
+console.log(req.body)
     // Rechercher l'utilisateur spécifique en utilisant son ID et son rôle
     if (userRole === "Student") {
       const user = await users.Student.findOne({ _id: userId });
