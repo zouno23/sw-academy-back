@@ -18,7 +18,7 @@ module.exports.TokenVerification = async (req, res, next) => {
     res.locals.userId = verified.identifier;
     next();
   } catch (error) {
-    res.status(500).json({ error: err });
-    console.log(err);
+    res.status(500).json({ error: error });
+    console.log(error);
   }
 };
