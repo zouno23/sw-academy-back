@@ -28,18 +28,6 @@ const studentSchema = new Schema({
       return generateId();
     },
   },
-  Lessons: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student_Lesson" }],
-  },
-  CoursePacks: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student_CoursePack" }],
-  },
-  Certificates: {
-    type: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "CourseCertificate" },
-      { type: mongoose.Schema.Types.ObjectId, ref: "LessonCertificate" },
-    ],
-  },
 });
 
 studentSchema.pre("save", async function (next) {
@@ -58,7 +46,6 @@ const teacherSchema = new Schema({
       return generateId();
     },
   },
-  Lessons: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "lesson" }] },
 });
 
 teacherSchema.pre("save", async function (next) {

@@ -18,9 +18,13 @@ module.exports.signup_post = async (req, res) => {
     const token = TokenGenerator(student._id, student.Role);
     res.setHeader("jwt", token);
     student.save;
-    res
-      .status(200)
-      .json({ message: `successful account creation for ${student.FullName}` });
+    res.status(200).json({
+      message: `successful account creation for ${student.FullName}`,
+      Result: {
+        userId: student._id,
+        userRole: student.Role,
+      },
+    });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Server error" });
@@ -43,9 +47,13 @@ module.exports.login_post = async (req, res) => {
     }
     const token = TokenGenerator(user._id, user.Role);
     res.setHeader("jwt", token);
-    return res
-      .status(200)
-      .json({ message: `successful authentification by ${user.FullName}` });
+    return res.status(200).json({
+      message: `successful authentification by ${user.FullName}`,
+      Result: {
+        userId: user._id,
+        userRole: user.Role,
+      },
+    });
   } catch (err) {
     res.status(500).json({ message: "internal server error" });
     console.log(err);
@@ -73,7 +81,13 @@ module.exports.signin_oauth_google = async (req, res) => {
       //if account does exist we grant access to the user
       const token = TokenGenerator(isStudentThere._id, isStudentThere.Role);
       res.setHeader("jwt", token);
-      return res.status(200).json({ message: "successfull login" });
+      return res.status(200).json({
+        message: "successfull login",
+        Result: {
+          userId: isStudentThere._id,
+          userRole: isStudentThere.Role,
+        },
+      });
     }
     //else we create an account for the user and grant him access to it
     const googlestudent = await users.Student.create({
@@ -86,9 +100,13 @@ module.exports.signin_oauth_google = async (req, res) => {
     googlestudent.save;
     const token = TokenGenerator(isStudentThere._id);
     res.setHeader("jwt", token);
-    return res
-      .status(200)
-      .json({ message: "successfull account creation & login" });
+    return res.status(200).json({
+      message: "successfull account creation & login",
+      Result: {
+        userId: googlestudent._id,
+        userRole: googlestudent.Role,
+      },
+    });
   } catch (err) {
     return res.status(500).json({ message: "internal Server error" });
   }
@@ -144,7 +162,13 @@ module.exports.resetPass = async (req, res) => {
     }
     user.Password = Password;
     await user.save();
-    return res.status(200).json({ message: "Password reset successfully" });
+    return res.status(200).json({
+      message: "Password reset successfully",
+      Result: {
+        userId: user._id,
+        userRole: user.Role,
+      },
+    });
   } catch (error) {
     return res.status(500).json({ message: "internal Server error" });
   }

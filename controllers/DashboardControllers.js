@@ -1,9 +1,5 @@
 const users = require("../models/users");
-const { Lesson, CoursePack } = require("../models/courses");
-const {
-  CourseCertificate,
-  LessonCertificate,
-} = require("../models/cerificates");
+
 const moment = require("moment");
 
 const teachers = users.Teacher;
@@ -28,34 +24,34 @@ module.exports.GetUserData = async (req, res) => {
   }
 };
 
-module.exports.GetUserStats = async (req, res) => {
-  try {
-    const User = res.locals.User;
+// module.exports.GetUserStats = async (req, res) => {
+//   try {
+//     const User = res.locals.User;
 
-    return res.status(200).json({
-      message: "Stats found successfully",
-      details:
-        "Response data will be Lessons , CoursePacks , Certificates as Result",
-      Result: {
-        Lessons: User?.Lessons.length,
-        CoursePacks: User?.CoursePacks.length,
-        Certificates: User?.Certificates.length,
-      },
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-};
+//     return res.status(200).json({
+//       message: "Stats found successfully",
+//       details:
+//         "Response data will be Lessons , CoursePacks , Certificates as Result",
+//       Result: {
+//         Lessons: User?.Lessons.length,
+//         CoursePacks: User?.CoursePacks.length,
+//         Certificates: User?.Certificates.length,
+//       },
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ message: "Internal server error" });
+//   }
+// };
 
 module.exports.GetUserProducts = async (req, res) => {
   try {
-    const Lessons = res.locals.Lessons;
+    const Courses = res.locals.Courses;
     return res.status(200).json({
       message: "Products found successfully",
       deatils: "Response data will be Lessons , CoursePacks as Result",
       Result: {
-        Lessons: Lessons,
+        Courses: Courses,
       },
     });
   } catch (error) {
@@ -64,25 +60,25 @@ module.exports.GetUserProducts = async (req, res) => {
   }
 };
 
-module.exports.GetStudentCompletedLessonsByMonth = async (req, res) => {
-  var LessonsPerMonth = {};
+module.exports.GetStudentCompletedCoursesByMonth = async (req, res) => {
+  var CoursesPerMonth = {};
   try {
-    const Lessons = res.locals.Lessons;
-    for (const item of Lessons) {
+    const Courses = res.locals.Courses;
+    for (const item of Courses) {
       if (item.IsCompleted) {
         const DateCompleted = new Date(item.DateCompleted);
         const month = DateCompleted.getMonth() + 1; //javascript months are zero based so we add 1 to get the correct
         const year = DateCompleted.getFullYear();
-        LessonsPerMonth[year] = LessonsPerMonth[year] || {};
-        LessonsPerMonth[year][month] = LessonsPerMonth[year][month] || 0;
-        LessonsPerMonth[year][month]++;
+        CoursesPerMonth[year] = CoursesPerMonth[year] || {};
+        CoursesPerMonth[year][month] = CoursesPerMonth[year][month] || 0;
+        CoursesPerMonth[year][month]++;
       }
     }
     return res.status(200).json({
-      message: "Completed lessons per month calculated successfully",
+      message: "Completed Courses per month calculated successfully",
       details:
-        "Response data will be an object with month numbers as keys and the number of completed lessons as values as Result",
-      Result: LessonsPerMonth,
+        "Response data will be an object with month numbers as keys and the number of completed Courses as values as Result",
+      Result: CoursesPerMonth,
     });
   } catch (error) {
     console.log("lessons per month error");
@@ -90,12 +86,12 @@ module.exports.GetStudentCompletedLessonsByMonth = async (req, res) => {
   }
 };
 
-module.exports.GetAvgProgressLessons = async (re, res) => {
+module.exports.GetAvgProgressCourses = async (re, res) => {
   try {
-    const Lessons = res.locals.Lessons;
+    const Courses = res.locals.Courses;
     let sum = 0;
     let count = 0;
-    for (const items of Lessons) {
+    for (const items of Courses) {
       if (!items.IsCompleted) {
         continue;
       }
@@ -106,7 +102,7 @@ module.exports.GetAvgProgressLessons = async (re, res) => {
     return res.status(200).json({
       message: "Average progress calculated successfully",
       details: "Response data will be a Average containing the result",
-      Average: Avg_progress,
+      Average: Avg_progress || 0,
     });
   } catch (error) {
     console.log("Error in getting average progress");

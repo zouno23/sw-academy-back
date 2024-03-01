@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const lessonSchema = new Schema({
+const courseSchema = new Schema({
   Title: { type: String, required: true },
   Description: { type: String },
   Field: { type: String, required: true },
@@ -10,36 +10,36 @@ const lessonSchema = new Schema({
   TimeRange: { type: String },
   IsLive: { type: Boolean },
   IsPublished: { type: Boolean },
-  course: { type: { type: mongoose.Schema.Types.ObjectId, ref: "course" } },
-  Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "teacher" },
-});
-
-const courseSchema = new Schema({
-  Title: { type: String, required: true },
-  Description: { type: String },
-  Field: { type: String, required: true },
-  TimeRange: { type: String },
-  Lessons: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: "lesson" }] },
+  CoursePack: { type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" },
+  Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" },
 });
 
 const coursePackSchema = new Schema({
   Title: { type: String, required: true },
   Description: { type: String },
+  Field: { type: String, required: true },
+  Courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+});
+
+const bootCampSchema = new Schema({
+  Title: { type: String, required: true },
+  Description: { type: String },
   TimeRange: { type: String },
-  courses: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "courses" }],
+  Field: { type: String },
+  CoursePacks: {
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" }],
   },
 });
 
-const StudentCoursePackSchema = new Schema({
+const StudentBootCampSchema = new Schema({
   Student: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Student",
     required: true,
   },
-  CoursePack: {
+  BootCamp: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "CoursePack",
+    ref: "BootCamp",
     required: true,
   },
   DateStarted: { type: Date, default: Date.now() },
@@ -53,15 +53,15 @@ const StudentCoursePackSchema = new Schema({
   DateCompleted: { Date },
 });
 
-const StudentLessonSchema = new Schema({
+const StudentCourseSchema = new Schema({
   Student: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Student",
     required: true,
   },
-  Lesson: {
+  Course: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Lesson",
+    ref: "Course",
     required: true,
   },
   DateStarted: { type: Date, default: Date.now() },
@@ -75,19 +75,19 @@ const StudentLessonSchema = new Schema({
   DateCompleted: { type: Date, defaul: null },
 });
 
-const Lesson = mongoose.model("Lesson", lessonSchema);
-const Course = mongoose.model("Course", courseSchema);
+const Course = mongoose.model("Lesson", courseSchema);
 const CoursePack = mongoose.model("CoursePack", coursePackSchema);
-const Student_Lesson = mongoose.model("Student_Lesson", StudentLessonSchema);
-const Student_CoursePack = mongoose.model(
-  "Student_CoursePack",
-  StudentCoursePackSchema
+const BootCamp = mongoose.model("BootCamp", bootCampSchema);
+const Student_Course = mongoose.model("Student_Course", StudentCourseSchema);
+const Student_BootCamp = mongoose.model(
+  "Student_BootCamp",
+  StudentBootCampSchema
 );
 
 module.exports = {
-  Lesson,
+  BootCamp,
   Course,
   CoursePack,
-  Student_CoursePack,
-  Student_Lesson,
+  Student_Course,
+  Student_BootCamp,
 };

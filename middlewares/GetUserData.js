@@ -1,9 +1,5 @@
 const users = require("../models/users");
-const { Lesson, CoursePack } = require("../models/courses");
-const {
-  CourseCertificate,
-  LessonCertificate,
-} = require("../models/cerificates");
+
 const teachers = users.Teacher;
 const students = users.Student;
 
@@ -13,13 +9,9 @@ module.exports.GetUserData = async (req, res, next) => {
     const userRole = res.locals.userRole;
     var User;
     if (userRole == "Student") {
-      User = await students
-        .findById(userId)
-        .populate({ path: "Lessons", populate: { path: "Lesson" } })
-        .populate({ path: "CoursePacks", populate: { path: "CoursePack" } })
-        .populate("Certificates");
+      User = await students.findById(userId);
     } else if (userRole == "Teacher") {
-      User = await teachers.findById(userId).populate("Lessons");
+      User = await teachers.findById(userId);
     }
     res.locals.User = User;
     next();
