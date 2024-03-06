@@ -2,6 +2,21 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
+const lessonSchema = new Schema({
+  Title: { type: String, required: true },
+  Course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+  Documents: [{ type: String }],
+  Streams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Stream" }],
+});
+
+const streamSchema = new Schema({
+  Lesson: { type: mongoose.Schema.Types.ObjectId, ref: "Lesson" },
+  Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" },
+  Students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
+  Date: { type: Date },
+  Length: { type: Number }, // in minutes
+});
+
 const courseSchema = new Schema({
   Title: { type: String, required: true },
   Description: { type: String },
@@ -10,15 +25,19 @@ const courseSchema = new Schema({
   TimeRange: { type: String },
   IsLive: { type: Boolean },
   IsPublished: { type: Boolean },
+  Rating: { type: Number, min: 0, max: 5, default: null },
   CoursePack: { type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" },
   Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" },
+  Price: { type: Number },
+  Lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }],
+  CoursePack: { type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" },
 });
 
 const coursePackSchema = new Schema({
   Title: { type: String, required: true },
   Description: { type: String },
   Field: { type: String, required: true },
-  Courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+  BootCamp: { type: mongoose.Schema.Types.ObjectId, ref: "BootCamp" },
 });
 
 const bootCampSchema = new Schema({
@@ -26,9 +45,6 @@ const bootCampSchema = new Schema({
   Description: { type: String },
   TimeRange: { type: String },
   Field: { type: String },
-  CoursePacks: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" }],
-  },
 });
 
 const StudentBootCampSchema = new Schema({
@@ -74,8 +90,9 @@ const StudentCourseSchema = new Schema({
   IsCompleted: { type: Boolean, default: false },
   DateCompleted: { type: Date, defaul: null },
 });
-
-const Course = mongoose.model("Lesson", courseSchema);
+const Stream = mongoose.model("Stream", streamSchema);
+const Lesson = mongoose.model("Lesson", lessonSchema);
+const Course = mongoose.model("Course", courseSchema);
 const CoursePack = mongoose.model("CoursePack", coursePackSchema);
 const BootCamp = mongoose.model("BootCamp", bootCampSchema);
 const Student_Course = mongoose.model("Student_Course", StudentCourseSchema);
@@ -90,4 +107,6 @@ module.exports = {
   CoursePack,
   Student_Course,
   Student_BootCamp,
+  Stream,
+  Lesson,
 };

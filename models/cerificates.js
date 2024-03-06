@@ -4,21 +4,19 @@ const Schema = mongoose.Schema;
 
 const certifSchema = new Schema({
   Title: { type: String },
-  Student: { type: { type: mongoose.Schema.Types.ObjectId, ref: "Student" } },
+  Student: { type: mongoose.Schema.Types.ObjectId, ref: "Student" },
 });
 
 const courseCertifSchema = new Schema({
-  Teacher: { type: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" } },
-  Course: { type: { type: mongoose.Schema.Types.ObjectId, ref: "Course" } },
+  Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" },
+  Course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
 });
 
 const BootCampCertifSchema = new Schema({
   Teachers: {
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Teacher" }],
   },
-  BootCamp: {
-    type: { type: { type: mongoose.Schema.Types.ObjectId, ref: "BootCamp" } },
-  },
+  BootCamp: { type: mongoose.Schema.Types.ObjectId, ref: "BootCamp" },
 });
 
 const Certificate = mongoose.model("Certificate", certifSchema);
@@ -31,4 +29,4 @@ const BootCampCertificate = Certificate.discriminator(
   BootCampCertifSchema
 );
 
-module.exports = { CourseCertificate, BootCampCertificate };
+module.exports = { CourseCertificate, BootCampCertificate, Certificate };

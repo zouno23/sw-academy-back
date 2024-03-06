@@ -28,6 +28,14 @@ const studentSchema = new Schema({
       return generateId();
     },
   },
+  Courses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
+  BootCamps: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Bootcamp",
+    },
+  ],
+  Certificates: [{ type: Schema.Types.ObjectId, ref: "Certificate" }],
 });
 
 studentSchema.pre("save", async function (next) {
@@ -53,9 +61,9 @@ teacherSchema.pre("save", async function (next) {
   this.Password = await bcrypt.hash(this.Password, salt);
   next();
 });
-
-const Student = mongoose.model("Student", studentSchema);
-const Teacher = mongoose.model("Teacher", teacherSchema);
+const User = mongoose.model("User", userSchema);
+const Student = User.discriminator("Student", studentSchema);
+const Teacher = User.discriminator("Teacher", teacherSchema);
 
 function generateId() {
   const timestamp = new Date().getTime().toString(16);
@@ -67,4 +75,4 @@ function generateId() {
   return id;
 }
 
-module.exports = { Teacher, Student };
+module.exports = { Teacher, Student, User };

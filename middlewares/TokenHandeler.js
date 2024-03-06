@@ -14,6 +14,11 @@ module.exports.TokenVerification = async (req, res, next) => {
         .status(401)
         .json({ msg: "Token verification failed, authorization denied" });
     }
+    const user = await users.User.findById(verified.identifier);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    } else if (user.Role !== verified.role)
+      return res.status(403).json({ message: "Forbidden access" }); //Forbidden
     res.locals.userRole = verified.role;
     res.locals.userId = verified.identifier;
     next();
