@@ -50,7 +50,7 @@ router.get(
 //teacher
 
 router.get(
-  "/Dashboard/CourseStats",
+  "/Dashboard/courseStats",
   TokenVerification,
   GetCourseByTeacher,
   DashboardControllers.GetCoursesStats

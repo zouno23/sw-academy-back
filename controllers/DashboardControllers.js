@@ -134,9 +134,8 @@ module.exports.GetCoursesStats = async (req, res) => {
         "Response data will be totalCourses and liveCourses and averageRating in Result",
       Result: {
         totalCourses: Courses.length,
-        averageRating: Avg_Rating || 0,
+        averageRating: parseFloat(Avg_Rating.toFixed(1)) || 0,
         liveCourses: live,
-        courses: Courses,
       },
     });
   } catch (err) {
@@ -160,9 +159,8 @@ module.exports.GetAgenda = async (req, res) => {
       if (Date.now() > item.Date) continue;
       else if (limitday < item.Date) continue;
       Agenda.push({
-        Time: item.Date,
-        Lesson: item.Lesson.Title,
-        Length: item.Length,
+        start: item.Date,
+        title: item.Lesson.Title,
       });
     }
     res.status(200).json({
