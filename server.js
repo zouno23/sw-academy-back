@@ -7,6 +7,8 @@ const corsSetup = require("./middlewares/CorsSetup");
 const setCache = require("./middlewares/Caching");
 const authroutes = require("./routers/authroutes");
 const userRoutes = require("./routers/userRoutes");
+const TeacherManagementRoute = require("./routers/AdminRoutes/TeacherManagementRoute");
+
 const DashboardRoutes = require("./routers/DashboardRoutes");
 // const TestRoutes = require("./routers/TestRoutes");
 
@@ -40,4 +42,6 @@ app.use(authroutes);
 app.use(userRoutes);
 
 app.use(DashboardRoutes);
+app.use(TeacherManagementRoute);
+
 // app.use(TestRoutes);

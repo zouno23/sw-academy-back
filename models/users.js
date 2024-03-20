@@ -12,6 +12,7 @@ const userSchema = new Schema({
     default: "Student",
   },
   Picture: { type: String },
+  Numero: { type: String },
   Password: { type: String, required: true },
   GoogleId: { type: String, default: null },
   code: { type: String },
@@ -46,6 +47,9 @@ const teacherSchema = new Schema({
       return generateId();
     },
   },
+  //libre ou non
+  availability:{type:String},
+  status:{type:String}
 });
 
 teacherSchema.pre("save", async function (next) {
@@ -54,8 +58,22 @@ teacherSchema.pre("save", async function (next) {
   next();
 });
 
+const assistantSchema = new Schema({
+  ...userSchema.obj,
+  AssistantId: {
+    type: String,
+    required: true,
+    unique: true,
+    default: function () {
+      return generateId();
+    },
+  },
+});
+
 const Student = mongoose.model("Student", studentSchema);
 const Teacher = mongoose.model("Teacher", teacherSchema);
+const Assistant = mongoose.model("Assistant", assistantSchema);
+
 
 function generateId() {
   const timestamp = new Date().getTime().toString(16);
@@ -67,4 +85,4 @@ function generateId() {
   return id;
 }
 
-module.exports = { Teacher, Student };
+module.exports = { Teacher, Student,Assistant };

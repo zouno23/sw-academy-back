@@ -57,7 +57,7 @@ module.exports.UpdateUserImage = async (req, res) => {
       if (!user) {
         return res.status(404).json({ message: "user not found" });
       }
-    
+      console.log(req.body)
       user.Picture = req.file.path || user.Picture;
       await user.save();
       return res.status(400).json({ message: "sucessful" });
