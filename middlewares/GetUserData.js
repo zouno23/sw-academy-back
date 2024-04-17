@@ -6,13 +6,8 @@ const students = users.Student;
 module.exports.GetUserData = async (req, res, next) => {
   try {
     const userId = res.locals.userId;
-    const userRole = res.locals.userRole;
-    var User;
-    if (userRole == "Student") {
-      User = await students.findById(userId);
-    } else if (userRole == "Teacher") {
-      User = await teachers.findById(userId);
-    }
+    const User = await users.User.findById(userId);
+    if (!User) return res.status(404).json({ msg: "User not found" });
     res.locals.User = User;
     next();
   } catch (error) {

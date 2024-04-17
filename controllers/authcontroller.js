@@ -34,12 +34,9 @@ module.exports.signup_post = async (req, res) => {
 module.exports.login_post = async (req, res) => {
   try {
     const { Email, Password } = req.body;
-    var user = await students.findOne({ Email });
+    const user = await users.User.findOne({ Email });
     if (!user) {
-      user = await teachers.findOne({ Email });
-      if (!user) {
-        return res.status(404).json({ message: "user not found" });
-      }
+      return res.status(404).json({ message: "user not found" });
     }
     const isPasswordValid = await bcrypt.compare(Password, user.Password);
     if (!isPasswordValid) {
@@ -74,18 +71,18 @@ module.exports.signin_oauth_google = async (req, res) => {
         return res.status(401).json("Wrong google access token");
       });
     // account existance verification using the google id
-    const isStudentThere = await users.Student.findOne({
+    const isUserThere = await users.User.findOne({
       GoogleId: googleprofile.data.id,
     });
-    if (isStudentThere) {
+    if (isUserThere) {
       //if account does exist we grant access to the user
-      const token = TokenGenerator(isStudentThere._id, isStudentThere.Role);
+      const token = TokenGenerator(isUserThere._id, isUserThere.Role);
       res.setHeader("jwt", token);
       return res.status(200).json({
         message: "successfull login",
         Result: {
-          userId: isStudentThere._id,
-          userRole: isStudentThere.Role,
+          userId: isUserThere._id,
+          userRole: isUserThere.Role,
         },
       });
     }
@@ -107,7 +104,8 @@ module.exports.signin_oauth_google = async (req, res) => {
         userRole: googlestudent.Role,
       },
     });
-  } catch (err) {
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "internal Server error" });
   }
 };

@@ -31,6 +31,14 @@ const studentSchema = new Schema({
       return generateId();
     },
   },
+  Courses: [{ type: Schema.Types.ObjectId, ref: "Course" }],
+  BootCamps: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Bootcamp",
+    },
+  ],
+  Certificates: [{ type: Schema.Types.ObjectId, ref: "Certificate" }],
 });
 
 studentSchema.pre("save", async function (next) {
@@ -59,6 +67,7 @@ teacherSchema.pre("save", async function (next) {
   next();
 });
 
+
 const assistantSchema = new Schema({
   ...userSchema.obj,
   AssistantId: {
@@ -71,8 +80,9 @@ const assistantSchema = new Schema({
   },
 });
 
-const Student = mongoose.model("Student", studentSchema);
-const Teacher = mongoose.model("Teacher", teacherSchema);
+const User = mongoose.model("User", userSchema);
+const Student = User.discriminator("Student", studentSchema);
+const Teacher = User.discriminator("Teacher", teacherSchema);
 const Assistant = mongoose.model("Assistant", assistantSchema);
 
 
@@ -86,4 +96,6 @@ function generateId() {
   return id;
 }
 
-module.exports = { Teacher, Student,Assistant };
+
+module.exports = { Teacher, Student,Assistant, User };
+
