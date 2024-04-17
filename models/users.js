@@ -16,6 +16,8 @@ const userSchema = new Schema({
   Password: { type: String, required: true },
   GoogleId: { type: String, default: null },
   code: { type: String },
+  status:{type:Boolean , default:true}
+  
 });
 userSchema.index({ code: 1 }, { expireAfterSeconds: 3600 });
 
@@ -48,8 +50,7 @@ const teacherSchema = new Schema({
     },
   },
   //libre ou non
-  availability:{type:String},
-  status:{type:String}
+  availability:{type:String, default:"true"},
 });
 
 teacherSchema.pre("save", async function (next) {

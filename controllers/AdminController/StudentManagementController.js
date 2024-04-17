@@ -6,33 +6,33 @@ const { TokenGenerator } = require("../../utils/tokengenerator");
 
 
 
-const teachers = users.Teacher;
 const students = users.Student;
 
-module.exports.addTeacher = async (req, res) => {
+module.exports.addStudent = async (req, res) => {
   try {
-    const user = await teachers.create(req.body);
-    // const token = TokenGenerator(student._id, student.Role);
+    const teacher = await students.create(req.body);
+    const token = TokenGenerator(teacher._id, teacher.Role);
     // res.setHeader("jwt", token);
-    user.save;
+    teacher.save;
     res.status(200).json({
-      message: `successful account creation for ${user.FullName}`,
+      message: `successful account creation for ${teacher.FullName}`,
       Result: {
-        userId: user._id,
-        userRole: user.Role,
+        userId: teacher._id,
+        userRole: teacher.Role,
       },
     });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // module.exports.DeleteTeacher = async (req, res) => {
  
 //   try{
 //     const { _id } = req.body;
-//     let teacher = await teachers.findOne({ _id });
+//     let teacher = await students.findOne({ _id });
 //     if (!teacher) {
 //       return res.status(404).json({ message: 'Teacher not found' });
 //     }
@@ -49,7 +49,7 @@ module.exports.addTeacher = async (req, res) => {
 module.exports.DeletePicture = async (req, res) => {
   try{
     const { _id } = req.body;
-    const user = await users.Teacher.findOne({ _id });
+    const user = await users.Student.findOne({ _id });
     console.log(_id)
       if (!user) {
         return res.status(404).json({ message: "user not found" });
@@ -69,13 +69,15 @@ module.exports.Upadate= async(req,res)=>{
 
   try{
     const { _id } = req.body;
-    const user = await users.Teacher.findOne({ _id });
+    const user = await users.Student.findOne({ _id });
     console.log(_id)
       if (!user) {
         return res.status(404).json({ message: "user not found" });
       }
       user.FullName = req.body.FullName || user.FullName;
-      user.Email=req.body.Email ||user.Email;     
+      user.Email=req.body.Email ||user.Email; 
+    //   user.Numero=req.body.Numero ||user.Numero;     
+
 
       
       await user.save();
@@ -85,22 +87,22 @@ module.exports.Upadate= async(req,res)=>{
     return res.status(500).json({ message: "Internal server error" });}
 }
 
-exports.getTeachers = async (req, res) => {
+exports.getStudents = async (req, res) => {
   try {
-    const teacher = await teachers.find();
-    console.log(teacher)
-    const spacedTeachers = teacher.map(teacher => ({
-       _id:teacher._id,
-       Name: teacher.FullName,
-       email: teacher.Email,
-        numero: teacher.Numero || "5" ,
+    const student = await students.find();
+    const spacedStudent = student.map(teacher => ({
+      _id:student._id,
+      teacherName: student.FullName,
+      email: student.Email,
+        numero: student.Numero || "5" ,
+        Courses: student.courses || '5' ,
         Role:"Teacher",
-        Courses: teacher.courses || '5' ,
-        availability:teacher.availability|| "true",
-        Status: teacher.status || false,
+        
+        // availability:student.availability|| "true",
+        Status: student.status || false,
         
       }));
-    console.log(spacedTeachers)
+    console.log(spacedStudent)
 
     res.status(200).json({
       message: "user found successfully",
@@ -117,7 +119,7 @@ exports.toggleStatus = async (req, res) =>  {
   
   try{
     const { _id } = req.body;
-    const user = await users.Teacher.findOne({ _id });
+    const user = await users.Student.findOne({ _id });
   
       if (!user) {
         return res.status(404).json({ message: "user not found" });

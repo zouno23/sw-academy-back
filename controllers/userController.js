@@ -60,7 +60,7 @@ module.exports.UpdateUserImage = async (req, res) => {
       console.log(req.body)
       user.Picture = req.file.path || user.Picture;
       await user.save();
-      return res.status(400).json({ message: "sucessful" });
+      return res.status(200).json({ message: "sucessful" });
     }
   }catch(err) {
     console.log(err);
