@@ -50,11 +50,15 @@ module.exports.GetUserStats = async (req, res) => {
 module.exports.GetUserProducts = async (req, res) => {
   try {
     const Courses = res.locals.Courses;
+    const sorted = Courses.sort((p1, p2) =>
+      p1.Rating > p2.Rating ? -1 : p2.Rating > p1.Rating ? 1 : 0
+    );
+    const top5 = sorted.slice(0, 5);
     return res.status(200).json({
       message: "Products found successfully",
       deatils: "Response data will be Lessons , CoursePacks as Result",
       Result: {
-        Courses: Courses,
+        Courses: top5,
       },
     });
   } catch (error) {
@@ -134,7 +138,7 @@ module.exports.GetCoursesStats = async (req, res) => {
         "Response data will be totalCourses and liveCourses and averageRating in Result",
       Result: {
         totalCourses: Courses.length,
-        averageRating: parseFloat(Avg_Rating.toFixed(1)) || 0,
+        averageRating: Avg_Rating.toFixed(1) || 0,
         liveCourses: live,
       },
     });
@@ -179,6 +183,8 @@ module.exports.GetSoldCoursesPerMonth = async (req, res) => {
   try {
     const Courses = res.locals.Courses;
     AllBoughtCourses = await Student_Course.find().populate("Course").exec();
+    if (!AllBoughtCourses.length)
+      return res.status(404).json({ message: "no courses found" });
     for (const item of AllBoughtCourses) {
       if (Courses.filter((value) => IsIdEqual(value, item.Course)).length > 0) {
         const DateBought = new Date(item.DateStarted);
@@ -188,6 +194,7 @@ module.exports.GetSoldCoursesPerMonth = async (req, res) => {
         CoursesPerMonth[year][month] = CoursesPerMonth[year][month] || 0;
         CoursesPerMonth[year][month]++;
       }
+      console.log("got here 3");
       return res.status(200).json({
         Message: "Successfully retrieved sold courses per month.",
         Details:

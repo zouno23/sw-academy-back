@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 const lessonSchema = new Schema({
   Title: { type: String, required: true },
+  Description: { type: String, required: false },
   Course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
   Documents: [{ type: String }],
   Streams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Stream" }],
@@ -26,9 +27,10 @@ const courseSchema = new Schema({
   IsLive: { type: Boolean },
   IsPublished: { type: Boolean },
   Rating: { type: Number, min: 0, max: 5, default: null },
-  CoursePack: { type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" },
+  NumOfRatings: { type: Number, default: 0 },
   Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" },
   Price: { type: Number },
+  Sellings: { type: Number, default: 0 },
   Lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }],
   CoursePack: { type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" },
 });
@@ -89,6 +91,7 @@ const StudentCourseSchema = new Schema({
   },
   IsCompleted: { type: Boolean, default: false },
   DateCompleted: { type: Date, defaul: null },
+  Rating: { type: Number, min: 0, max: 5, default: null },
 });
 const Stream = mongoose.model("Stream", streamSchema);
 const Lesson = mongoose.model("Lesson", lessonSchema);
