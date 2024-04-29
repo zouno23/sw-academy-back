@@ -1,4 +1,11 @@
-const { Student_Course, Course, CoursePack } = require("../models/courses");
+const {
+  Student_Course,
+  Course,
+  CoursePack,
+  Lesson,
+} = require("../models/courses");
+const { NewLesson } = require("../utils/CourseUtils");
+
 //All
 module.exports.GetCourses = async (req, res) => {
   userId = res.locals.userId;
@@ -48,7 +55,9 @@ module.exports.GetCourse = async (req, res) => {
 
   try {
     // Find the course by its ID using the Course model's findById method
-    const course = await Course.findById(courseID);
+    const course = await Course.findById(courseID)
+      .populate({ path: "Teacher", select: "FullName _id" })
+      .populate("Lessons");
 
     // If the course is not found, return a 404 status code with an error message
     if (!course) {
@@ -99,11 +108,20 @@ module.exports.PostNewCourse = async (req, res) => {
         ? parseFloat(req.body.Price)
         : null;
     newCourse.TimeRange = (await newCourse.IsLive) ? req.body?.TimeRange : null;
+    // creating Lessons and adding them to the course
+    const Lessons = req.body.Lessons;
+    let LessonsList = [];
+    for (const Lesson of Lessons || []) {
+      const result = await NewLesson(Lesson, res);
+      LessonsList.push(result.Lesson);
+    }
+    newCourse.Lessons = LessonsList;
     newCourse.save();
     // If the course is created successfully, return a 201 status code with the course id
     return res.status(201).json({
       message: "Course created Successfully!",
       Details: `Course with id ${newCourse._id} has been created`,
+      Result: newCourse,
     });
   } catch (error) {
     // If there is an error, log it and return a 500 status code with an error message
@@ -138,6 +156,48 @@ module.exports.UpdateCourse = async (req, res) => {
     // If there is an error, log it and return a 500 status code with an error message
     console.log(error);
     return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+module.exports.UploadFile = async (req, res) => {
+  try {
+    const userRole = res.locals.userRole;
+    const userId = res.locals.userId;
+    const course = await Course.findOne({
+      Teacher: userId,
+      Title: req.headers.coursetitle,
+    }).populate("Lessons");
+    for (const lesson of course.Lessons) {
+      if (lesson.Title === req.headers.lessontitle) {
+        const UpdateLesson = await Lesson.findById(lesson._id);
+        let NewDocs = [];
+        if (UpdateLesson.Documents) {
+          NewDocs = UpdateLesson.Documents;
+        }
+        NewDocs.push(req.file.path);
+        UpdateLesson.Documents = NewDocs;
+        await UpdateLesson.save();
+      }
+    }
+    return res.status(200).json({ message: "sucessful" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "internal server error" });
+  }
+};
+module.exports.uploadCourseCover = async (req, res) => {
+  try {
+    const { id } = req.headers;
+    const course = await Course.findById(id);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+    course.Cover = req.file?.path;
+    await course.save();
+    return res.status(200).json({ message: "sucessful" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "internal server error" });
   }
 };
 

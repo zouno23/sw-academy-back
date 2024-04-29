@@ -6,7 +6,7 @@ const lessonSchema = new Schema({
   Title: { type: String, required: true },
   Description: { type: String, required: false },
   Course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
-  Documents: [{ type: String }],
+  Documents: [{ type: String, default: null }],
   Streams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Stream" }],
 });
 
@@ -21,6 +21,7 @@ const streamSchema = new Schema({
 const courseSchema = new Schema({
   Title: { type: String, required: true },
   Description: { type: String },
+  Cover: { type: String },
   Field: { type: String, required: true },
   RequiredLevel: { type: String, required: true },
   TimeRange: { type: String },

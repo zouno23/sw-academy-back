@@ -1,13 +1,10 @@
 const users = require("../models/users");
 
-
-
-
 module.exports.UpdateUser = async (req, res) => {
   try {
     const userId = res.locals.userId;
     const userRole = res.locals.userRole;
-console.log(req.body)
+    console.log(req.body);
     // Rechercher l'utilisateur spécifique en utilisant son ID et son rôle
     if (userRole === "Student") {
       const user = await users.Student.findOne({ _id: userId });
@@ -31,7 +28,7 @@ console.log(req.body)
       }
       user.FullName = req.body.FullName || user.FullName;
       user.email = req.body.email || user.email;
-            // user.about = req.body.about || user.about;
+      // user.about = req.body.about || user.about;
 
       if (req.body.password) {
         user.Password = req.body.password;
@@ -45,9 +42,7 @@ console.log(req.body)
   }
 };
 module.exports.UpdateUserImage = async (req, res) => {
-
   try {
-    console.log("done2")
     const userId = res.locals.userId;
     const userRole = res.locals.userRole;
 
@@ -57,15 +52,12 @@ module.exports.UpdateUserImage = async (req, res) => {
       if (!user) {
         return res.status(404).json({ message: "user not found" });
       }
-      console.log(req.body)
       user.Picture = req.file.path || user.Picture;
       await user.save();
       return res.status(200).json({ message: "sucessful" });
     }
-  }catch(err) {
+  } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "internal server error" });
-
   }
-
-}
+};
