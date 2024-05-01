@@ -94,6 +94,25 @@ const StudentCourseSchema = new Schema({
   DateCompleted: { type: Date, defaul: null },
   Rating: { type: Number, min: 0, max: 5, default: null },
 });
+
+lessonSchema.pre(
+  "remove",
+  { document: true, query: false },
+  async function (next) {
+    try {
+      const lesson = this;
+      // Remove lesson from all courses that reference it
+      await Course.updateMany(
+        { lessons: lesson._id },
+        { $pull: { lessons: lesson._id } }
+      );
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 const Stream = mongoose.model("Stream", streamSchema);
 const Lesson = mongoose.model("Lesson", lessonSchema);
 const Course = mongoose.model("Course", courseSchema);

@@ -9,10 +9,17 @@ const {
   BuyCourse,
   UploadFile,
   uploadCourseCover,
+  UpdateLesson,
+  DeleteLesson,
+  AddLesson,
+  UploadLessonsFile,
+  DeleteCourse,
 } = require("../controllers/CourseControllers");
 const {
   uploadFile,
   uploadImage,
+  fileSetupMiddleware,
+  uploadLessonFile,
 } = require("../middlewares/UploadFileMiddelware");
 const router = new Router();
 
@@ -39,11 +46,21 @@ router.post(
   UploadFile
 );
 router.post(
+  "/lesson/upload",
+  TokenVerification,
+  fileSetupMiddleware,
+  uploadLessonFile.array("files", 5),
+  UploadLessonsFile
+);
+router.post(
   "/courseCover",
   TokenVerification,
   uploadImage.single("file"),
   uploadCourseCover
 );
 router.put("/course", TokenVerification, UpdateCourse);
-
+router.put("/lesson", TokenVerification, UpdateLesson);
+router.delete("/lesson", TokenVerification, DeleteLesson);
+router.post("/lesson", TokenVerification, AddLesson);
+router.delete("/course", TokenVerification, DeleteCourse);
 module.exports = router;

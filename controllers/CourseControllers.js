@@ -2,6 +2,7 @@ const {
   Student_Course,
   Course,
   CoursePack,
+
   Lesson,
 } = require("../models/courses");
 const { NewLesson } = require("../utils/CourseUtils");
@@ -197,6 +198,120 @@ module.exports.uploadCourseCover = async (req, res) => {
     return res.status(200).json({ message: "sucessful" });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ message: "internal server error" });
+  }
+};
+
+module.exports.UpdateLesson = async (req, res) => {
+  const userRole = res.locals.userRole;
+  const userId = res.locals.userId;
+  try {
+    // Check if the user role is Teacher
+    if (userRole != "Teacher") {
+      // If not, return a 401 status code with an unauthorized message
+      return res.status(401).send("You are unauthorized");
+    }
+    const LessonID = await req.query.Id;
+    const lesson = await Lesson.findByIdAndUpdate(LessonID, {
+      ...req.body,
+    });
+    if (!lesson) {
+      return res.status(404).json({ message: "No such lesson found!" });
+    }
+    res.status(200).json({
+      message: "Successfuly updated ",
+      details: "new details of the lesson are as Result",
+      Result: lesson,
+    });
+  } catch (error) {
+    // If there is an error, log it and return a 500 status code with an error message
+    console.log(error);
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};
+module.exports.DeleteLesson = async (req, res) => {
+  const userRole = res.locals.userRole;
+  const userId = res.locals.userId;
+  try {
+    // Check if the user role is Teacher
+    if (userRole != "Teacher") {
+      // If not, return a 401 status code with an unauthorized message
+      return res.status(401).send("You are unauthorized");
+    }
+    const LessonID = await req.query.Id;
+    const course = await Course.findOne({ Lessons: LessonID });
+    course.Lessons.pull(LessonID);
+    course.save();
+    await Lesson.deleteOne({ _id: LessonID });
+    res.status(200).json({
+      message: "Successfuly deleted ",
+    });
+  } catch (error) {
+    // If there is an error, log it and return a 500 status code with an error message
+    console.log(error);
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+module.exports.AddLesson = async (req, res) => {
+  const userRole = res.locals.userRole;
+  const userId = res.locals.userId;
+  try {
+    if (userRole != "Teacher") {
+      // If not, return a 401 status code with an unauthorized message
+      return res.status(401).send("You are unauthorized");
+    }
+    const CourseId = await req.query.Id;
+    const course = await Course.findOne({ _id: CourseId });
+    const newLesson = await Lesson.create(req.body);
+    course.Lessons.push(newLesson._id);
+    course.save();
+    res.status(200).json({
+      message: "Successfuly Added Lesson ",
+      Result: newLesson,
+    });
+  } catch (error) {
+    // If there is an error, log it and return a 500 status code with an error message
+    console.log(error);
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+module.exports.UploadLessonsFile = async (req, res) => {
+  try {
+    const LessonId = await req.query.LessonId;
+    const lesson = await Lesson.findById(LessonId);
+    if (!lesson) {
+      return res.status(404).json({ message: "No such lesson found!" });
+    }
+    const files = req.files;
+    files.forEach((file) => {
+      lesson.Documents.push(file.path);
+    });
+    await lesson.save();
+    return res.status(200).json({ message: "sucessful" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "internal server error" });
+  }
+};
+
+module.exports.DeleteCourse = async (req, res) => {
+  const userRole = res.locals.userRole;
+  const userId = res.locals.userId;
+  try {
+    if (userRole != "Teacher") {
+      // If not, return a 401 status code with an unauthorized message
+      return res.status(401).send("You are unauthorized");
+    }
+    const CourseId = await req.query.CourseId;
+    const course = await Course.findByIdAndDelete(CourseId);
+    if (!course) {
+      return res.status(404).json({ message: "No such course found!" });
+    }
+    return res.status(200).json({ message: "sucessful" });
+  } catch (error) {
+    console.log(err);
     return res.status(500).json({ message: "internal server error" });
   }
 };

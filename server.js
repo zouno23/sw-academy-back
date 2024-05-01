@@ -29,6 +29,7 @@ app.use(setCache);
 
 const dbURI = "mongodb://localhost:27017/sw-academy";
 app.use("/Image", express.static(path.join(__dirname, "/Image")));
+app.use("/Files", express.static(path.join(__dirname, "/Files")));
 
 mongoose
   .connect(dbURI)
