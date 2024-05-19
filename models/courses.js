@@ -15,7 +15,7 @@ const streamSchema = new Schema({
   Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" },
   Students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
   Date: { type: Date },
-  Length: { type: Number }, // in minutes
+  SecretCode: { type: String },
 });
 
 const courseSchema = new Schema({

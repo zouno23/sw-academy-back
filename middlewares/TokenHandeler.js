@@ -27,3 +27,21 @@ module.exports.TokenVerification = async (req, res, next) => {
     console.log(error);
   }
 };
+
+module.exports.IOTokenVerification = async (socket, next) => {
+  try {
+    const token = socket.handshake.auth.token;
+    if (!token) {
+      return next(new Error("Authentication error"));
+    }
+    const verified = jwt.verify(token, TokenSecretCode);
+    if (!verified) {
+      return next(new Error("Authentication error"));
+    }
+    socket.userId = verified.identifier;
+    socket.userRole = verified.role;
+    next();
+  } catch (error) {
+    console.log(error);
+  }
+};
