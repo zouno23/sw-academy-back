@@ -14,6 +14,7 @@ const {
   AddLesson,
   UploadLessonsFile,
   DeleteCourse,
+  GetTeacherLessons,
 } = require("../controllers/CourseControllers");
 const {
   uploadFile,
@@ -63,4 +64,5 @@ router.put("/lesson", TokenVerification, UpdateLesson);
 router.delete("/lesson", TokenVerification, DeleteLesson);
 router.post("/lesson", TokenVerification, AddLesson);
 router.delete("/course", TokenVerification, DeleteCourse);
+router.get("/lessons", TokenVerification, GetTeacherLessons);
 module.exports = router;

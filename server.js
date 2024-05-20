@@ -15,17 +15,12 @@ const path = require("path");
 const app = express();
 const server = require("http").createServer(app);
 const initializeSocket = require("./utils/Socket");
+const AdminAuthRoute = require("./routers/AdminRoutes/AdminAuthRoute");
 // const TestRoutes = require("./routers/TestRoutes");
 
 const corsOptions = {
   origin: "http://localhost:3000",
 };
-
-// web socket
-
-// const io = require("socket.io")(server, {
-//   cors: corsOptions,
-// });
 
 //middlewares
 app.use(cookieparser());
@@ -59,3 +54,6 @@ app.use(TeacherManagementRoute);
 app.use(MeetingRoute);
 
 // app.use(TestRoutes);
+// Admin Routes
+
+app.use(AdminAuthRoute);

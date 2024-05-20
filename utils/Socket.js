@@ -14,7 +14,7 @@ const initializeSocket = (server) => {
   io.use(IOTokenVerification);
 
   io.on("connection", (socket) => {
-    console.log(socket.handshake.auth.token);
+    console.log("connected to the socket " + socket.id);
     // check for the users in the meeting and the room and if there is no on in the meeting one will be created
     socket.on("check", (roomId) => {
       socket.join(roomId);

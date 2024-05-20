@@ -28,7 +28,7 @@ module.exports.GetCourses = async (req, res) => {
     }
 
     if (!courses) {
-      return res.status(401).json({ msg: "No Courses Found" });
+      return res.status(404).json({ msg: "No Courses Found" });
     } else {
       return res.status(200).json({
         message: "courses found successfully",
@@ -412,6 +412,28 @@ module.exports.BuyCourse = async (req, res) => {
       message: `The course has been added to your cart`,
       details: `You officially bought the course with th ID ${courseId}`,
     });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+module.exports.GetTeacherLessons = async (req, res) => {
+  const userRole = res.locals.userRole;
+  const userId = res.locals.userId;
+  try {
+    if (userRole != "Teacher") {
+      return res.status(401).json({ message: "user is not authorized" });
+    }
+    let Lessons = [];
+    const Courses = await Course.find({ Teacher: userId }).populate("Lessons");
+    for (const course of Courses) {
+      const oldLessons = Lessons;
+      Lessons = [...oldLessons, ...course.Lessons];
+    }
+    res
+      .status(200)
+      .json({ message: "lessons found successfully", Result: Lessons });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Server Error" });

@@ -17,7 +17,6 @@ module.exports.signup_post = async (req, res) => {
     const student = await students.create(req.body);
     const token = TokenGenerator(student._id, student.Role);
     res.setHeader("jwt", token);
-    student.save;
     res.status(200).json({
       message: `successful account creation for ${student.FullName}`,
       Result: {
@@ -95,7 +94,7 @@ module.exports.signin_oauth_google = async (req, res) => {
       Picture: googleprofile.data.picture,
     });
     googlestudent.save;
-    const token = TokenGenerator(isStudentThere._id);
+    const token = TokenGenerator(isUserThere._id);
     res.setHeader("jwt", token);
     return res.status(200).json({
       message: "successfull account creation & login",
