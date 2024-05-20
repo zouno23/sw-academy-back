@@ -11,6 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google/generative-ai": "^0.8.0",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
@@ -23,6 +24,7 @@
     "mongoose": "^8.1.1",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.9",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "openai": "^4.38.3"
   }
 }

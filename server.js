@@ -11,6 +11,9 @@ const TeacherManagementRoute = require("./routers/AdminRoutes/TeacherManagementR
 
 const DashboardRoutes = require("./routers/DashboardRoutes");
 const CourseRoutes = require("./routers/CourseRoutes");
+const QuizRoutes = require("./routers/QuizRoutes");
+
+
 const path = require("path");
 // const TestRoutes = require("./routers/TestRoutes");
 
@@ -46,5 +49,5 @@ app.use(userRoutes);
 app.use(DashboardRoutes);
 app.use(CourseRoutes);
 app.use(TeacherManagementRoute);
-
+// app.use(QuizRoutes)
 // app.use(TestRoutes);
