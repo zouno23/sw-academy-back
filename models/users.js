@@ -8,7 +8,7 @@ const userSchema = new Schema({
   Role: {
     type: String,
     required: true,
-    enum: ["SuperAdmin", "Admin", "Assistant", "Teacher", "Student"],
+    enum: ["Teacher", "Student"],
     default: "Student",
   },
   Picture: { type: String },
@@ -16,8 +16,7 @@ const userSchema = new Schema({
   Password: { type: String, required: true },
   GoogleId: { type: String, default: null },
   code: { type: String },
-  status:{type:Boolean , default:true}
-  
+  status: { type: Boolean, default: true },
 });
 userSchema.index({ code: 1 }, { expireAfterSeconds: 3600 });
 
@@ -63,7 +62,7 @@ const teacherSchema = new Schema({
     },
   },
   //libre ou non
-  availability:{type:String, default:"true"},
+  availability: { type: String, default: "true" },
 });
 
 teacherSchema.pre("save", async function (next) {
@@ -72,24 +71,9 @@ teacherSchema.pre("save", async function (next) {
   next();
 });
 
-
-const assistantSchema = new Schema({
-  ...userSchema.obj,
-  AssistantId: {
-    type: String,
-    required: true,
-    unique: true,
-    default: function () {
-      return generateId();
-    },
-  },
-});
-
 const User = mongoose.model("User", userSchema);
 const Student = User.discriminator("Student", studentSchema);
 const Teacher = User.discriminator("Teacher", teacherSchema);
-const Assistant = mongoose.model("Assistant", assistantSchema);
-
 
 function generateId() {
   const timestamp = new Date().getTime().toString(16);
@@ -101,6 +85,4 @@ function generateId() {
   return id;
 }
 
-
-module.exports = { Teacher, Student,Assistant, User };
-
+module.exports = { Teacher, Student, User };

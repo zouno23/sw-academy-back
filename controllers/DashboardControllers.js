@@ -164,7 +164,7 @@ module.exports.GetAgenda = async (req, res) => {
       else if (limitday < item.Date) continue;
       Agenda.push({
         start: item.Date,
-        title: item.Lesson.Title,
+        title: item?.Lesson.Title,
       });
     }
     res.status(200).json({

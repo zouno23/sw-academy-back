@@ -6,7 +6,7 @@ const lessonSchema = new Schema({
   Title: { type: String, required: true },
   Description: { type: String, required: false },
   Course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
-  Documents: [{ type: String }],
+  Documents: [{ type: String, default: null }],
   Streams: [{ type: mongoose.Schema.Types.ObjectId, ref: "Stream" }],
 });
 
@@ -15,12 +15,13 @@ const streamSchema = new Schema({
   Teacher: { type: mongoose.Schema.Types.ObjectId, ref: "Teacher" },
   Students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
   Date: { type: Date },
-  Length: { type: Number }, // in minutes
+  SecretCode: { type: String },
 });
 
 const courseSchema = new Schema({
   Title: { type: String, required: true },
   Description: { type: String },
+  Cover: { type: String },
   Field: { type: String, required: true },
   RequiredLevel: { type: String, required: true },
   TimeRange: { type: String },
@@ -93,6 +94,25 @@ const StudentCourseSchema = new Schema({
   DateCompleted: { type: Date, defaul: null },
   Rating: { type: Number, min: 0, max: 5, default: null },
 });
+
+lessonSchema.pre(
+  "remove",
+  { document: true, query: false },
+  async function (next) {
+    try {
+      const lesson = this;
+      // Remove lesson from all courses that reference it
+      await Course.updateMany(
+        { lessons: lesson._id },
+        { $pull: { lessons: lesson._id } }
+      );
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 const Stream = mongoose.model("Stream", streamSchema);
 const Lesson = mongoose.model("Lesson", lessonSchema);
 const Course = mongoose.model("Course", courseSchema);
