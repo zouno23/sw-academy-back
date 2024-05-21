@@ -11,6 +11,9 @@ const TeacherManagementRoute = require("./routers/AdminRoutes/TeacherManagementR
 const MeetingRoute = require("./routers/MeetingRoute");
 const DashboardRoutes = require("./routers/DashboardRoutes");
 const CourseRoutes = require("./routers/CourseRoutes");
+const QuizRoutes = require("./routers/QuizRoutes");
+
+
 const path = require("path");
 const app = express();
 const server = require("http").createServer(app);
@@ -51,6 +54,7 @@ app.use(userRoutes);
 app.use(DashboardRoutes);
 app.use(CourseRoutes);
 app.use(TeacherManagementRoute);
+
 app.use(MeetingRoute);
 
 // app.use(TestRoutes);
