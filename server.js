@@ -16,6 +16,7 @@ const app = express();
 const server = require("http").createServer(app);
 const initializeSocket = require("./utils/Socket");
 const AdminAuthRoute = require("./routers/AdminRoutes/AdminAuthRoute");
+const AdminDashboardRoute = require("./routers/AdminRoutes/AdminDashboardRoute");
 // const TestRoutes = require("./routers/TestRoutes");
 
 const corsOptions = {
@@ -57,3 +58,4 @@ app.use(MeetingRoute);
 // Admin Routes
 
 app.use(AdminAuthRoute);
+app.use(AdminDashboardRoute);

@@ -49,3 +49,27 @@ module.exports.CreateAdmin = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+module.exports.GetAdminData = async (req, res) => {
+  try {
+    const AdminId = res.locals.AdminId;
+    console.log(AdminId);
+    const admin = await Admin.findById(AdminId);
+    if (!admin) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    res.status(200).json({
+      message: "admin found successfully",
+      Result: {
+        _id: admin._id,
+        Name: admin.Name,
+        Email: admin.Email,
+        Role: admin.Role,
+        Picture: admin.Picture,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

@@ -34,6 +34,7 @@ const courseSchema = new Schema({
   Sellings: { type: Number, default: 0 },
   Lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }],
   CoursePack: { type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" },
+  Date: { type: Date, default: Date.now() },
 });
 
 const coursePackSchema = new Schema({
