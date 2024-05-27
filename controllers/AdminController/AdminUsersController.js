@@ -288,3 +288,80 @@ module.exports.UpdateTeacher = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+module.exports.GetStudent = async (req, res) => {
+  try {
+    const student = await Student.findById(
+      req.query.StudentId,
+      "Picture  FullName Email Date Numero Status"
+    );
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+    return res
+      .status(200)
+      .json({ message: "Student found successfully ", Result: student });
+  } catch (error) {
+    res.status(500).json({ message: "internal server error" });
+  }
+};
+
+module.exports.GetStudentCourses = async (req, res) => {
+  try {
+    const StudentCourses = await Student_Course.find({
+      Student: req.query.StudentId,
+    }).populate("Course");
+    if (!StudentCourses) {
+      return res.status(404).json({ message: "Student courses not found" });
+    }
+    return res.status(200).json({
+      message: "Student Courses found successfully",
+      Result: StudentCourses,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "internal server error" });
+  }
+};
+
+module.exports.GetStudentCompletedCourses = async (req, res) => {
+  try {
+    const StudentCourses = await Student_Course.find({
+      Student: req.query.StudentId,
+      Progress: 100,
+    }).populate("Course");
+    if (!StudentCourses) {
+      return res.status(404).json({ message: "Student courses not found" });
+    }
+    return res.status(200).json({
+      message: "Student Courses found successfully",
+      Result: StudentCourses,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "internal server error" });
+  }
+};
+
+module.exports.UpdateStudent = async (req, res) => {
+  try {
+    const student = await Student.findById(req.query.StudentId);
+    if (!student) {
+      return res.status(404).json({ message: "student not found" });
+    }
+    student.FullName = req.body.FullName;
+    student.Email = req.body.Email;
+    student.Status = req.body.Status;
+    await student.save();
+    return res.status(200).json({
+      message: "student updated successfully",
+      Result: {
+        FullName: student.FullName,
+        Date: student.Date,
+        Picture: student.Picture,
+        Email: student.Email,
+        Status: student.Status,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
