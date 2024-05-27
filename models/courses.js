@@ -25,7 +25,7 @@ const courseSchema = new Schema({
   Field: { type: String, required: true },
   RequiredLevel: { type: String, required: true },
   TimeRange: { type: String },
-  IsLive: { type: Boolean },
+  IsLive: { type: Boolean, default: "false" },
   IsPublished: { type: Boolean },
   Rating: { type: Number, min: 0, max: 5, default: null },
   NumOfRatings: { type: Number, default: 0 },
@@ -34,7 +34,13 @@ const courseSchema = new Schema({
   Sellings: { type: Number, default: 0 },
   Lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }],
   CoursePack: { type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" },
-  Date: { type: Date, default: Date.now() },
+  Date: { type: Date },
+});
+courseSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    this.Date = await Date.now();
+  }
+  next();
 });
 
 const coursePackSchema = new Schema({
@@ -62,7 +68,7 @@ const StudentBootCampSchema = new Schema({
     ref: "BootCamp",
     required: true,
   },
-  DateStarted: { type: Date, default: Date.now() },
+  DateStarted: { type: Date },
   Progress: {
     type: Number,
     min: 0,
@@ -71,6 +77,12 @@ const StudentBootCampSchema = new Schema({
   },
   IsCompleted: { type: Boolean, default: false },
   DateCompleted: { Date },
+});
+StudentBootCampSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    this.DateStarted = await Date.now();
+  }
+  next();
 });
 
 const StudentCourseSchema = new Schema({
@@ -94,6 +106,13 @@ const StudentCourseSchema = new Schema({
   IsCompleted: { type: Boolean, default: false },
   DateCompleted: { type: Date, defaul: null },
   Rating: { type: Number, min: 0, max: 5, default: null },
+});
+
+StudentCourseSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    this.DateStarted = await Date.now();
+  }
+  next();
 });
 
 lessonSchema.pre(

@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
+
 const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
@@ -12,11 +14,12 @@ const userSchema = new Schema({
     default: "Student",
   },
   Picture: { type: String },
+  Date: { type: Date },
   Numero: { type: String },
   Password: { type: String, required: true },
   GoogleId: { type: String, default: null },
   code: { type: String },
-  status: { type: Boolean, default: true },
+  Status: { type: Boolean, default: true },
 });
 userSchema.index({ code: 1 }, { expireAfterSeconds: 3600 });
 
@@ -66,6 +69,12 @@ teacherSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    this.Date = moment(Date.now());
+  }
+  next();
+});
 const User = mongoose.model("User", userSchema);
 const Student = User.discriminator("Student", studentSchema);
 const Teacher = User.discriminator("Teacher", teacherSchema);

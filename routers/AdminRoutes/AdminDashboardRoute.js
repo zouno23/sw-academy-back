@@ -6,6 +6,9 @@ const {
   getNumberOfUsers,
   getCoursesNumbers,
   GetAllSoldCoursesPerMonth,
+  GetLatestCourses,
+  GetMostActiveTeachers,
+  GetMostActiveStudents,
 } = require("../../controllers/AdminController/AdminDashboardControllers");
 const router = new Router();
 
@@ -16,4 +19,8 @@ router.get(
   VerifAdminToken,
   GetAllSoldCoursesPerMonth
 );
+
+router.get("/Admin/Recent-Courses", VerifAdminToken, GetLatestCourses);
+router.get("/Admin/GetBestTeachers", VerifAdminToken, GetMostActiveTeachers);
+router.get("/Admin/GetBestStudents", GetMostActiveStudents);
 module.exports = router;

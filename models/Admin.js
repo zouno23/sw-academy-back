@@ -8,19 +8,27 @@ const AdminSchema = new Schema({
   Role: {
     type: String,
     required: true,
-    enum: ["Assistant", "Admin", "SuperAdmin"],
+    enum: ["Assisstant", "Admin", "SuperAdmin"],
     default: "Assisstant",
   },
   Picture: { type: String },
   Numero: { type: String },
   Password: { type: String, required: true },
-  status: { type: Boolean, default: true },
+  Date: { type: Date },
+  Status: { type: Boolean, default: true },
 });
 AdminSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt();
   this.Password = await bcrypt.hash(this.Password, salt);
   next();
 });
+AdminSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    this.Date = Date.now();
+  }
+  next();
+});
+
 const Admin = mongoose.model("Admin", AdminSchema);
 
 module.exports = Admin;
