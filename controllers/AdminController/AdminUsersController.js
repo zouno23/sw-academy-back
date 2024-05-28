@@ -1,6 +1,11 @@
 const Admin = require("../../models/Admin");
 const { Teacher, Student } = require("../../models/users");
-const { Course, Student_Course } = require("../../models/courses");
+const {
+  Course,
+  Student_Course,
+  Student_BootCamp,
+  BootCamp,
+} = require("../../models/courses");
 const { RoleComparison } = require("../../utils/RoleComparison");
 module.exports.GetNewestTeachers = async (req, res) => {
   try {
@@ -223,6 +228,10 @@ module.exports.GetTeacherCourses = async (req, res) => {
     for (const course of TeacherCourses) {
       const sellings = await Student_Course.find({ Course: course._id });
       result.push({
+        Cover: course.Cover,
+        Field: course.Field,
+        IsLive: course.IsLive,
+        Rating: course.Rating,
         Title: course.Title,
         Description: course.Description,
         _id: course._id,
@@ -361,6 +370,51 @@ module.exports.UpdateStudent = async (req, res) => {
         Status: student.Status,
       },
     });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports.AddStudentCourse = async (req, res) => {
+  try {
+    const { StudentId, ProductId, type } = req.body;
+    let Course;
+    if (type === "Course") {
+      Course = await Student_Course.create({
+        Student: StudentId,
+        Course: ProductId,
+      });
+    } else if (type === "Course") {
+      Course = await Student_BootCamp.create({
+        Student: StudentId,
+        BootCamp: ProductId,
+      });
+    }
+    if (!Course) {
+      return res.status(400).json({ message: "error adding the course" });
+    }
+    return res.status(200).json({ message: "course added successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports.GetAllCourses = async (req, res) => {
+  try {
+    const Courses = await Course.find({ IsLive: false });
+    return res
+      .status(200)
+      .json({ message: "courses found successfully", Result: Courses });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+module.exports.GetAllBootcamps = async (req, res) => {
+  try {
+    const Bootcamp = await BootCamp.find({ IsLive: false });
+    return res
+      .status(200)
+      .json({ message: "Bootcamp found successfully", Result: Bootcamp });
   } catch (error) {
     return res.status(500).json({ message: "Internal Server Error" });
   }

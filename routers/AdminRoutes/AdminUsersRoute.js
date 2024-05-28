@@ -20,6 +20,9 @@ const {
   GetStudentCourses,
   GetStudentCompletedCourses,
   UpdateStudent,
+  AddStudentCourse,
+  GetAllCourses,
+  GetAllBootcamps,
 } = require("../../controllers/AdminController/AdminUsersController");
 
 const router = new Router();
@@ -53,4 +56,8 @@ router.get(
   GetStudentCompletedCourses
 ); //
 router.put("/Admin/Student", VerifAdminToken, UpdateStudent); //
+router.post("/Admin/Add-Student-Course", VerifAdminToken, AddStudentCourse); //
+
+router.get("/Admin/All-Courses", VerifAdminToken, GetAllCourses); //
+router.get("/Admin/All-Bootcamps", VerifAdminToken, GetAllBootcamps);
 module.exports = router;

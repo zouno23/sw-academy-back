@@ -52,7 +52,7 @@ module.exports.GetAllSoldCoursesPerMonth = async (req, res) => {
     AllBoughtCourses = await Student_Course.find().populate("Course").exec();
     if (!AllBoughtCourses.length)
       return res.status(404).json({ message: "no courses found" });
-    const thisYear = Date.now().getFullYear();
+    const thisYear = Date.now()?.getFullYear();
     const lastYear = thisYear - 1;
     for (const item of AllBoughtCourses) {
       const DateBought = new Date(item.DateStarted);
