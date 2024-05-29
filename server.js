@@ -18,6 +18,7 @@ const initializeSocket = require("./utils/Socket");
 const AdminAuthRoute = require("./routers/AdminRoutes/AdminAuthRoute");
 const AdminDashboardRoute = require("./routers/AdminRoutes/AdminDashboardRoute");
 const AdminUsersRoute = require("./routers/AdminRoutes/AdminUsersRoute");
+const AdminCoursesRoute = require("./routers/AdminRoutes/AdminCoursesRoute");
 // const TestRoutes = require("./routers/TestRoutes");
 
 const corsOptions = {
@@ -60,3 +61,4 @@ app.use(MeetingRoute);
 app.use(AdminUsersRoute);
 app.use(AdminAuthRoute);
 app.use(AdminDashboardRoute);
+app.use(AdminCoursesRoute);

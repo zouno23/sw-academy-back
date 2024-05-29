@@ -33,7 +33,7 @@ const courseSchema = new Schema({
   Price: { type: Number },
   Sellings: { type: Number, default: 0 },
   Lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }],
-  CoursePack: { type: mongoose.Schema.Types.ObjectId, ref: "CoursePack" },
+  BootCamp: { type: mongoose.Schema.Types.ObjectId, ref: "BootCamp" },
   Date: { type: Date },
 });
 courseSchema.pre("save", async function (next) {
@@ -41,13 +41,6 @@ courseSchema.pre("save", async function (next) {
     this.Date = await Date.now();
   }
   next();
-});
-
-const coursePackSchema = new Schema({
-  Title: { type: String, required: true },
-  Description: { type: String },
-  Field: { type: String, required: true },
-  BootCamp: { type: mongoose.Schema.Types.ObjectId, ref: "BootCamp" },
 });
 
 const bootCampSchema = new Schema({
@@ -136,7 +129,6 @@ lessonSchema.pre(
 const Stream = mongoose.model("Stream", streamSchema);
 const Lesson = mongoose.model("Lesson", lessonSchema);
 const Course = mongoose.model("Course", courseSchema);
-const CoursePack = mongoose.model("CoursePack", coursePackSchema);
 const BootCamp = mongoose.model("BootCamp", bootCampSchema);
 const Student_Course = mongoose.model("Student_Course", StudentCourseSchema);
 const Student_BootCamp = mongoose.model(
@@ -147,7 +139,6 @@ const Student_BootCamp = mongoose.model(
 module.exports = {
   BootCamp,
   Course,
-  CoursePack,
   Student_Course,
   Student_BootCamp,
   Stream,
