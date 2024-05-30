@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { Student } = require("./users");
 const Schema = mongoose.Schema;
 
 const lessonSchema = new Schema({
@@ -74,6 +74,11 @@ const StudentBootCampSchema = new Schema({
 StudentBootCampSchema.pre("save", async function (next) {
   if (this.isNew) {
     this.DateStarted = await Date.now();
+    const student = await Student.findById(this.Student);
+    let passage = student.BootCamps;
+    passage.push(this._id);
+    student.BootCamps = passage;
+    student.save();
   }
   next();
 });
@@ -104,7 +109,21 @@ const StudentCourseSchema = new Schema({
 StudentCourseSchema.pre("save", async function (next) {
   if (this.isNew) {
     this.DateStarted = await Date.now();
+    const student = await Student.findById(this.Student);
+    let passage = student.Courses;
+    passage.push(this._id);
+    student.Courses = passage;
+    student.save();
+    const course = await Course.findById(this.Course);
+    course.Sellings += 1;
+    course.save();
   }
+  next();
+});
+StudentCourseSchema.pre("deleteOne", async function (next) {
+  const student = await Student.findById(this.Student);
+  student.Courses.splice(student.Courses.indexOf(this._id), 1);
+  student.save();
   next();
 });
 
