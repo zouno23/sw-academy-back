@@ -8,11 +8,22 @@ const {
   NewCourse,
   CourseCover,
   AddFile,
+  AdminDeleteCourse,
+  AdminUpdateCourse,
+  AdminUpdateLesson,
+  AdminDeleteLesson,
+  AdminAddLesson,
 } = require("../../controllers/AdminController/AdminCoursesController");
 const {
   uploadImage,
   uploadFile,
+  AdminFileSetupMiddleware,
+  uploadLessonFile,
 } = require("../../middlewares/UploadFileMiddelware");
+const {
+  GetCourse,
+  UploadLessonsFile,
+} = require("../../controllers/CourseControllers");
 
 const router = new Router();
 
@@ -33,5 +44,19 @@ router.post(
   AddFile
 );
 
-// router.get("/Admin/All-Courses", VerifAdminToken, GetAllCourses);
+router.get("/Admin/Course", VerifAdminToken, GetCourse);
+router.delete("/Admin/Course", VerifAdminToken, AdminDeleteCourse);
+router.put("/Admin/Course", VerifAdminToken, AdminUpdateCourse);
+
+router.post("/Admin/Lesson", VerifAdminToken, AdminAddLesson);
+router.put("/Admin/Lesson", VerifAdminToken, AdminUpdateLesson);
+router.delete("/Admin/Lesson", VerifAdminToken, AdminDeleteLesson);
+router.post(
+  "/Admin/Lesson/Upload",
+  VerifAdminToken,
+  AdminFileSetupMiddleware,
+  uploadLessonFile.array("files", 5),
+  UploadLessonsFile
+);
+
 module.exports = router;

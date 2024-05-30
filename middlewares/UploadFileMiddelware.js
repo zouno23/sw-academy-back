@@ -16,7 +16,8 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     //   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
     //   cb(null, file.fieldname + '-' + uniqueSuffix)
-    const ext = file.originalname.split(".")[1];
+    const name = file.originalname.split(".");
+    const ext = name[name.length - 1];
     cb(
       null,
       req.headers.coursetitle +
@@ -38,7 +39,8 @@ const storage1 = multer.diskStorage({
   filename: function (req, file, cb) {
     //   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
     //   cb(null, file.fieldname + '-' + uniqueSuffix)
-    const ext = file.originalname.split(".")[1];
+    const name = file.originalname.split(".");
+    const ext = name[name.length - 1];
     cb(null, req.headers.coursetitle + Date.now() + "." + ext);
   },
 });
@@ -80,7 +82,8 @@ const storage2 = multer.diskStorage({
   filename: function (req, file, cb) {
     //   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
     //   cb(null, file.fieldname + '-' + uniqueSuffix)
-    const ext = file.originalname.split(".")[1];
+    const name = file.originalname.split(".");
+    const ext = name[name.length - 1];
     cb(
       null,
       req.query.CourseTitle +
@@ -94,9 +97,28 @@ const storage2 = multer.diskStorage({
 });
 
 const uploadLessonFile = multer({ storage: storage2 });
+
+const AdminFileSetupMiddleware = async (req, res, next) => {
+  try {
+    const LessonId = await req.query.LessonId;
+    const CourseId = await req.query.CourseId;
+    const lesson = await Lesson.findById(LessonId);
+    if (!lesson) return res.status(402).json({ message: "lesson not found" });
+    const course = await Course.findById(CourseId);
+    if (!course) return res.status(402).json({ message: "course not found" });
+    req.query.CourseTitle = course.Title;
+    req.query.LessonTitle = lesson.Title;
+    return next();
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "internal server error" });
+  }
+};
+
 module.exports = {
   uploadFile,
   uploadImage,
   uploadLessonFile,
   fileSetupMiddleware,
+  AdminFileSetupMiddleware,
 };
