@@ -7,6 +7,7 @@ const {
   BootCamp,
 } = require("../../models/courses");
 const { RoleComparison } = require("../../utils/RoleComparison");
+const IsIdEqual = require("../../utils/ObjComparaison");
 module.exports.GetNewestTeachers = async (req, res) => {
   try {
     const teachers = await Teacher.find({}, "FullName Email Date Picture")
@@ -262,14 +263,15 @@ module.exports.GetTeacherCourseSellings = async (req, res) => {
         CoursesPerMonth[year][month] = CoursesPerMonth[year][month] || 0;
         CoursesPerMonth[year][month]++;
       }
-      return res.status(200).json({
-        Message: "Successfully retrieved sold courses per month.",
-        Details:
-          "Response data will be an object with years as key it's value  is an object with month numbers as keys and the number of sold Courses as values as Result",
-        Result: CoursesPerMonth,
-      });
     }
+    return res.status(200).json({
+      Message: "Successfully retrieved sold courses per month.",
+      Details:
+        "Response data will be an object with years as key it's value  is an object with month numbers as keys and the number of sold Courses as values as Result",
+      Result: CoursesPerMonth,
+    });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -334,16 +336,26 @@ module.exports.GetStudentCourses = async (req, res) => {
 
 module.exports.GetStudentCompletedCourses = async (req, res) => {
   try {
+    var CoursesPerMonth = {};
     const StudentCourses = await Student_Course.find({
       Student: req.query.StudentId,
       Progress: 100,
+      IsCompleted: true,
     }).populate("Course");
     if (!StudentCourses) {
       return res.status(404).json({ message: "Student courses not found" });
     }
+    for (const item of StudentCourses) {
+      const DateCompleted = new Date(item.DateCompleted);
+      const month = DateCompleted.getMonth() + 1;
+      const year = DateCompleted.getFullYear();
+      CoursesPerMonth[year] = CoursesPerMonth[year] || {};
+      CoursesPerMonth[year][month] = CoursesPerMonth[year][month] || 0;
+      CoursesPerMonth[year][month]++;
+    }
     return res.status(200).json({
       message: "Student Courses found successfully",
-      Result: StudentCourses,
+      Result: CoursesPerMonth,
     });
   } catch (error) {
     return res.status(500).json({ message: "internal server error" });
@@ -411,7 +423,8 @@ module.exports.GetAllCourses = async (req, res) => {
 };
 module.exports.GetAllBootcamps = async (req, res) => {
   try {
-    const Bootcamp = await BootCamp.find({ IsLive: false });
+    const Bootcamp = await BootCamp.find();
+
     return res
       .status(200)
       .json({ message: "Bootcamp found successfully", Result: Bootcamp });

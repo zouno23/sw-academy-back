@@ -13,6 +13,8 @@ const {
   AdminUpdateLesson,
   AdminDeleteLesson,
   AdminAddLesson,
+  GetAllBootcamps,
+  AdminAddBootcamp,
 } = require("../../controllers/AdminController/AdminCoursesController");
 const {
   uploadImage,
@@ -58,5 +60,7 @@ router.post(
   uploadLessonFile.array("files", 5),
   UploadLessonsFile
 );
+
+router.post("/Admin/Bootcamp", VerifAdminToken, AdminAddBootcamp);
 
 module.exports = router;

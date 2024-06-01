@@ -23,7 +23,7 @@ const courseSchema = new Schema({
   Description: { type: String },
   Cover: { type: String },
   Field: { type: String, required: true },
-  RequiredLevel: { type: String, required: true },
+  RequiredLevel: { type: String },
   TimeRange: { type: String },
   IsLive: { type: Boolean, default: "false" },
   IsPublished: { type: Boolean },
@@ -46,8 +46,11 @@ courseSchema.pre("save", async function (next) {
 const bootCampSchema = new Schema({
   Title: { type: String, required: true },
   Description: { type: String },
-  TimeRange: { type: String },
+  StartingDate: { type: Date },
+  EndingDate: { type: Date },
   Field: { type: String },
+  Rating: { type: Number, min: 0, max: 5, default: null },
+  Cover: { type: String },
 });
 
 const StudentBootCampSchema = new Schema({

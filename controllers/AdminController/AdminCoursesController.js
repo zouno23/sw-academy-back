@@ -4,7 +4,7 @@ const {
   Student_BootCamp,
   Lesson,
 } = require("../../models/courses");
-const { NewLesson } = require("../../utils/CourseUtils");
+const { NewLesson, NewCourse } = require("../../utils/CourseUtils");
 
 module.exports.GetCoursesSample = async (req, res) => {
   try {
@@ -201,6 +201,27 @@ module.exports.AdminAddLesson = async (req, res) => {
     });
   } catch (error) {
     // If there is an error, log it and return a 500 status code with an error message
+    console.log(error);
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+module.exports.AdminAddBootcamp = async (req, res) => {
+  try {
+    const Camp = req.body.Bootcamp;
+    const Courses = req.body.Courses;
+    const newCamp = await BootCamp.create(Camp);
+    if (!newCamp) {
+      return res.status(400).json({ message: "bootcamp coldn't be created" });
+    }
+    res.locals.BootcampId = newCamp._id;
+    for (const course of Courses) {
+      const id = await NewCourse(course, res);
+    }
+    return res
+      .status(200)
+      .json({ message: "Bootcamp Created Successfully", Result: newCamp });
+  } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Server Error" });
   }
