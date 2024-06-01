@@ -115,10 +115,28 @@ const AdminFileSetupMiddleware = async (req, res, next) => {
   }
 };
 
+const BootcampCover = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const path = "Files/" + "Bootcamps/" + req.query.BootcampTitle;
+    fs.mkdirSync(path, { recursive: true });
+    cb(null, path);
+  },
+  filename: function (req, file, cb) {
+    //   const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    //   cb(null, file.fieldname + '-' + uniqueSuffix)
+    const name = file.originalname.split(".");
+    const ext = name[name.length - 1];
+    cb(null, req.query.BootcampTitle + "." + ext);
+  },
+});
+
+const uploadBootCampCover = multer({ storage: BootcampCover });
+
 module.exports = {
   uploadFile,
   uploadImage,
   uploadLessonFile,
+  uploadBootCampCover,
   fileSetupMiddleware,
   AdminFileSetupMiddleware,
 };

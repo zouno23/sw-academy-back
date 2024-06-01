@@ -15,12 +15,14 @@ const {
   AdminAddLesson,
   GetAllBootcamps,
   AdminAddBootcamp,
+  UploadToBootcamp,
 } = require("../../controllers/AdminController/AdminCoursesController");
 const {
   uploadImage,
   uploadFile,
   AdminFileSetupMiddleware,
   uploadLessonFile,
+  uploadBootCampCover,
 } = require("../../middlewares/UploadFileMiddelware");
 const {
   GetCourse,
@@ -62,5 +64,11 @@ router.post(
 );
 
 router.post("/Admin/Bootcamp", VerifAdminToken, AdminAddBootcamp);
+router.post(
+  "/Admin/BootcampCover",
+  VerifAdminToken,
+  uploadBootCampCover.single("file"),
+  UploadToBootcamp
+);
 
 module.exports = router;

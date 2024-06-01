@@ -226,3 +226,19 @@ module.exports.AdminAddBootcamp = async (req, res) => {
     return res.status(500).json({ msg: "Server Error" });
   }
 };
+
+module.exports.UploadToBootcamp = async (req, res) => {
+  try {
+    const BootcampId = await req.query.BootcampId;
+    const camp = await BootCamp.findById(BootcampId);
+    if (!camp) {
+      return res.status(404).json({ message: "no such bootcamp found " });
+    }
+    const file = req.file;
+    camp.Cover = file.path;
+    await camp.save();
+    return res.status(200).json({ message: "cover uploaded successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "internal server error" });
+  }
+};
