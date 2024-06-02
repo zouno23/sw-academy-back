@@ -65,4 +65,5 @@ router.delete("/lesson", TokenVerification, DeleteLesson);
 router.post("/lesson", TokenVerification, AddLesson);
 router.delete("/course", TokenVerification, DeleteCourse);
 router.get("/lessons", TokenVerification, GetTeacherLessons);
+
 module.exports = router;

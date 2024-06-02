@@ -16,6 +16,7 @@ const {
   GetAllBootcamps,
   AdminAddBootcamp,
   UploadToBootcamp,
+  GetBootCamp,
 } = require("../../controllers/AdminController/AdminCoursesController");
 const {
   uploadImage,
@@ -70,5 +71,7 @@ router.post(
   uploadBootCampCover.single("file"),
   UploadToBootcamp
 );
+
+router.get("/Admin/Bootcamp", VerifAdminToken, GetBootCamp);
 
 module.exports = router;

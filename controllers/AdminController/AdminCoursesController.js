@@ -242,3 +242,38 @@ module.exports.UploadToBootcamp = async (req, res) => {
     return res.status(500).json({ message: "internal server error" });
   }
 };
+
+module.exports.GetBootCamp = async (req, res) => {
+  const BootCampId = req.query.BootcampId;
+  try {
+    const camp = await BootCamp.findById(BootCampId);
+    if (!camp) {
+      return res
+        .status(404)
+        .json({ msg: "The Camp with the given ID was not found." });
+    }
+    const courses = await Course.find({ BootCamp: BootCampId })
+      .populate({ path: "Teacher", select: "FullName _id" })
+      .populate({ path: "Lessons", populate: "Streams" });
+
+    let bootcamp = {
+      _id: camp._id,
+      Title: camp.Title,
+      Description: camp.Description,
+      StartingDate: camp.StartingDate,
+      EndingDate: camp.EndingDate,
+      Rating: camp.Rating,
+      Field: camp.Field,
+      Students: camp.Students,
+      Cover: camp.Cover,
+      Courses: courses,
+    };
+
+    return res
+      .status(200)
+      .json({ message: "camp found successfully", Result: bootcamp });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};

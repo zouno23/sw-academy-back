@@ -396,7 +396,7 @@ module.exports.AddStudentCourse = async (req, res) => {
         Student: StudentId,
         Course: ProductId,
       });
-    } else if (type === "Course") {
+    } else if (type === "Bootcamp") {
       Course = await Student_BootCamp.create({
         Student: StudentId,
         BootCamp: ProductId,

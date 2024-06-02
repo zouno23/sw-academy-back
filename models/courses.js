@@ -51,6 +51,7 @@ const bootCampSchema = new Schema({
   Field: { type: String },
   Rating: { type: Number, min: 0, max: 5, default: null },
   Cover: { type: String },
+  Students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
 });
 
 const StudentBootCampSchema = new Schema({
@@ -82,6 +83,9 @@ StudentBootCampSchema.pre("save", async function (next) {
     passage.push(this._id);
     student.BootCamps = passage;
     student.save();
+    const bootcamp = await BootCamp.findById(this.BootCamp);
+    bootcamp.Students.push(student._id);
+    bootcamp.save();
   }
   next();
 });
