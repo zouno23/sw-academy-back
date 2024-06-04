@@ -44,7 +44,7 @@ module.exports.NewCourse = async (course, res) => {
         .json({ message: "an error acquired while creating the Course" });
     }
     newCourse.save();
-    return { message: "successfull", Lesson: newCourse._id };
+    return { message: "successfull", Course: newCourse._id };
   } catch (error) {
     console.log("problem");
     return res

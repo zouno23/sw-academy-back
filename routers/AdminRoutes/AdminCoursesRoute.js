@@ -17,6 +17,10 @@ const {
   AdminAddBootcamp,
   UploadToBootcamp,
   GetBootCamp,
+  EditBootCamp,
+  DeleteBootCamp,
+  AdminAddLiveCourse,
+  AdminNewStream,
 } = require("../../controllers/AdminController/AdminCoursesController");
 const {
   uploadImage,
@@ -73,5 +77,9 @@ router.post(
 );
 
 router.get("/Admin/Bootcamp", VerifAdminToken, GetBootCamp);
+router.put("/Admin/Bootcamp", VerifAdminToken, EditBootCamp);
+router.delete("/Admin/Bootcamp", VerifAdminToken, DeleteBootCamp);
+router.post("/Admin/Bootcamp/Course", VerifAdminToken, AdminAddLiveCourse);
 
+router.post("/Admin/Meeting", VerifAdminToken, AdminNewStream);
 module.exports = router;

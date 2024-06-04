@@ -3,9 +3,16 @@ const {
   BootCamp,
   Student_BootCamp,
   Lesson,
+  Stream,
 } = require("../../models/courses");
 const { NewLesson, NewCourse } = require("../../utils/CourseUtils");
-
+const { v4: uuidv4 } = require("uuid");
+const v4options = {
+  random: [
+    0x10, 0x91, 0x56, 0xbe, 0xc4, 0xfb, 0xc1, 0xea, 0x71, 0xb4, 0xef, 0xe1,
+    0x67, 0x1c, 0x58, 0x36,
+  ],
+};
 module.exports.GetCoursesSample = async (req, res) => {
   try {
     const Sample = await Course.find({}).limit(5);
@@ -275,5 +282,73 @@ module.exports.GetBootCamp = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+module.exports.EditBootCamp = async (req, res) => {
+  const BootCampId = req.query.BootcampId;
+  try {
+    const { Title, Description, Field } = req.body;
+    const camp = await BootCamp.findById(BootCampId);
+    if (!camp) {
+      return res
+        .status(404)
+        .json({ msg: "The Camp with the given ID was not found." });
+    }
+    camp.Title = Title || camp.Title;
+    camp.Description = Description || camp.Description;
+    camp.Field = Field || camp.Field;
+    camp.save();
+    return res.status(200).json({ message: "camp edited successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+module.exports.DeleteBootCamp = async (req, res) => {
+  const BootCampId = req.query.BootcampId;
+  try {
+    const camp = await BootCamp.findByIdAndDelete(BootCampId);
+    return res.status(200).json({ message: "Bootcamp Deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+module.exports.AdminAddLiveCourse = async (req, res) => {
+  try {
+    const BootCampId = await req.query.BootcampId;
+    res.locals.BootcampId = await BootCampId;
+    const course = req.body;
+    const id = await NewCourse(course, res);
+    return res.status(200).json({ message: "Course added successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+module.exports.AdminNewStream = async (req, res) => {
+  try {
+    const { date, lesson, Teacher } = req.body;
+    const SecretCode = uuidv4(v4options);
+    const stream = await Stream.create({
+      Lesson: lesson,
+      SecretCode,
+      Teacher,
+      Date: date,
+    });
+    const l = await Lesson.findById(lesson);
+    if (l.Streams) l.Streams.push(stream._id);
+    else l.Streams = [stream._id];
+    l.save();
+    res
+      .status(200)
+      .json({ message: "meeting created successfully", Result: SecretCode });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
