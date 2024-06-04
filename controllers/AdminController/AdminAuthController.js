@@ -73,3 +73,22 @@ module.exports.GetAdminData = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+module.exports.ChangeData = async (req, res) => {
+  try {
+    const AdminId = res.locals.AdminId;
+    const admin = await Admin.findById(AdminId);
+    if (!admin) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    admin.Picture = req.file?.path;
+    admin.Name = req.body.Name || admin.Name;
+    if (req.body.Password) admin.Password = req.body.Password;
+    admin.Email = req.body.Email || admin.Email;
+    admin.save();
+    res.status(200).json({ message: "admin saved successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

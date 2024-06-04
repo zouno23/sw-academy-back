@@ -37,6 +37,7 @@ module.exports.GetBootcampsSample = async (req, res) => {
     for (const camp of Sample) {
       const Bought = await Student_BootCamp.find({ BootCamp: camp._id });
       result.push({
+        Cover: camp.Cover,
         Title: camp.Title,
         _id: camp._id,
         Description: camp.Description,
