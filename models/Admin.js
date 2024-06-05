@@ -18,8 +18,10 @@ const AdminSchema = new Schema({
   Status: { type: Boolean, default: true },
 });
 AdminSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSalt();
-  this.Password = await bcrypt.hash(this.Password, salt);
+  if (this.Password.length != 60) {
+    const salt = await bcrypt.genSalt();
+    this.Password = await bcrypt.hash(this.Password, salt);
+  }
   next();
 });
 AdminSchema.pre("save", async function (next) {

@@ -19,10 +19,11 @@ const AdminAuthRoute = require("./routers/AdminRoutes/AdminAuthRoute");
 const AdminDashboardRoute = require("./routers/AdminRoutes/AdminDashboardRoute");
 const AdminUsersRoute = require("./routers/AdminRoutes/AdminUsersRoute");
 const AdminCoursesRoute = require("./routers/AdminRoutes/AdminCoursesRoute");
+const BootCampsRoute = require("./routers/BootcampRoute");
 // const TestRoutes = require("./routers/TestRoutes");
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "*",
 };
 
 //middlewares
@@ -55,6 +56,7 @@ app.use(DashboardRoutes);
 app.use(CourseRoutes);
 app.use(TeacherManagementRoute);
 app.use(MeetingRoute);
+app.use(BootCampsRoute);
 
 // app.use(TestRoutes);
 // Admin Routes

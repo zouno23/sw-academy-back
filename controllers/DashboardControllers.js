@@ -156,12 +156,9 @@ module.exports.GetAgenda = async (req, res) => {
     );
     if (!Streams) res.status(401).json({ message: "No stream Found" });
     const Agenda = [];
-    let limitday = new Date();
-    limitday.setDate(limitday.getDate() + 7); //add  7 days to current date
 
     for (const item of Streams) {
       if (Date.now() > item.Date) continue;
-      else if (limitday < item.Date) continue;
       Agenda.push({
         start: item.Date,
         title: item?.Lesson.Title,

@@ -85,6 +85,7 @@ module.exports.PostNewCourse = async (req, res) => {
   // Get the user role and user id from the response local variables
   const userRole = res.locals.userRole;
   const userId = res.locals.userId;
+  console.log(req.body);
   try {
     // Check if the user role is Teacher
     if (userRole != "Teacher") {

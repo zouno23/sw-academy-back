@@ -44,8 +44,10 @@ const studentSchema = new Schema({
 });
 
 studentSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSalt();
-  this.Password = await bcrypt.hash(this.Password, salt);
+  if (this.Password.length != 60) {
+    const salt = await bcrypt.genSalt();
+    this.Password = await bcrypt.hash(this.Password, salt);
+  }
   next();
 });
 
@@ -64,8 +66,10 @@ const teacherSchema = new Schema({
 });
 
 teacherSchema.pre("save", async function (next) {
-  const salt = await bcrypt.genSalt();
-  this.Password = await bcrypt.hash(this.Password, salt);
+  if (this.Password.length != 60) {
+    const salt = await bcrypt.genSalt();
+    this.Password = await bcrypt.hash(this.Password, salt);
+  }
   next();
 });
 

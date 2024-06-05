@@ -56,6 +56,7 @@ module.exports.GetBootcampsSample = async (req, res) => {
 module.exports.NewCourse = async (req, res) => {
   try {
     // Create a new course object with the request body data
+    console.log(req.body, "test test");
     const newCourse = await Course.create({
       Title: req.body.Title,
       Description: req.body.Description,

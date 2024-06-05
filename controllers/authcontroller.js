@@ -93,8 +93,8 @@ module.exports.signin_oauth_google = async (req, res) => {
       GoogleId: googleprofile.data.id,
       Picture: googleprofile.data.picture,
     });
-    googlestudent.save;
-    const token = TokenGenerator(isUserThere._id);
+    googlestudent.save();
+    const token = TokenGenerator(googlestudent._id);
     res.setHeader("jwt", token);
     return res.status(200).json({
       message: "successfull account creation & login",

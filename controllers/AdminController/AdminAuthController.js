@@ -81,7 +81,7 @@ module.exports.ChangeData = async (req, res) => {
     if (!admin) {
       return res.status(404).json({ message: "User not found." });
     }
-    admin.Picture = req.file?.path;
+    if (req.file.size > 0) admin.Picture = req.file?.path || admin.Picture;
     admin.Name = req.body.Name || admin.Name;
     if (req.body.Password) admin.Password = req.body.Password;
     admin.Email = req.body.Email || admin.Email;
