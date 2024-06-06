@@ -60,14 +60,15 @@ module.exports.CreateMeeting = async (req, res) => {
 };
 
 module.exports.MeetingsList = async (req, res) => {
-  const role = res.locals.role;
+  const role = res.locals.userRole;
   const userId = res.locals.userId;
   try {
     let streams;
     if (role === "Teacher") {
       streams = await Stream.find({ Teacher: userId }).populate("Lesson");
     } else if (role === "Student") {
-      streams = await Stream.find({ Students: userId }).populate("Lesson");
+      const Streams = await Stream.find().populate("Lesson");
+      streams = Streams.filter((stream) => stream.Students.includes(userId));
     }
     if (!streams) {
       return res.status(404).json({ message: "no streams found for you" });

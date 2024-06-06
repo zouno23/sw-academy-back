@@ -4,6 +4,7 @@ const {
   CreateMeeting,
   CheckForMeeting,
   MeetingsList,
+  VerifyMeet,
 } = require("../controllers/MeetingControllers");
 
 const router = new Router();

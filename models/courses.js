@@ -49,6 +49,7 @@ const bootCampSchema = new Schema({
   StartingDate: { type: Date },
   EndingDate: { type: Date },
   Field: { type: String },
+  NumOfRatings: { type: Number, default: 0 },
   Rating: { type: Number, min: 0, max: 5, default: null },
   Cover: { type: String },
   Students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }],
@@ -72,6 +73,7 @@ const StudentBootCampSchema = new Schema({
     max: 100,
     default: 0,
   },
+  Rating: { type: Number, default: null },
   IsCompleted: { type: Boolean, default: false },
   DateCompleted: { Date },
 });
@@ -86,6 +88,18 @@ StudentBootCampSchema.pre("save", async function (next) {
     const bootcamp = await BootCamp.findById(this.BootCamp);
     bootcamp.Students.push(student._id);
     bootcamp.save();
+    const Courses = await Course.find({ BootCamp: this.BootCamp }).populate({
+      path: "Lessons",
+      populate: "Streams",
+    });
+    let Streams = [];
+    for (const course of Courses) {
+      course.Lessons.map((lesson) => Streams.push(...lesson.Streams));
+    }
+    Streams.map((s) => {
+      s.Students.push(this.Student);
+      s.save();
+    });
   }
   next();
 });
