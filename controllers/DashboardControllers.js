@@ -50,8 +50,8 @@ module.exports.GetUserStats = async (req, res) => {
 module.exports.GetUserProducts = async (req, res) => {
   try {
     const Courses = res.locals.Courses;
-    const sorted = Courses.sort((p1, p2) =>
-      p1.Rating > p2.Rating ? -1 : p2.Rating > p1.Rating ? 1 : 0
+    const sorted = Courses.filter((a) => a.Course.IsLive === false).sort(
+      (p1, p2) => (p1.Rating > p2.Rating ? -1 : p2.Rating > p1.Rating ? 1 : 0)
     );
     const top5 = sorted.slice(0, 5);
     return res.status(200).json({
@@ -74,6 +74,7 @@ module.exports.GetStudentCompletedCoursesByMonth = async (req, res) => {
     for (const item of Courses) {
       if (item.IsCompleted) {
         const DateCompleted = new Date(item.DateCompleted);
+        console.log(item.DateCompleted);
         const month = DateCompleted.getMonth() + 1; //javascript months are zero based so we add 1 to get the correct
         const year = DateCompleted.getFullYear();
         CoursesPerMonth[year] = CoursesPerMonth[year] || {};
@@ -99,9 +100,6 @@ module.exports.GetAvgProgressCourses = async (re, res) => {
     let sum = 0;
     let count = 0;
     for (const items of Courses) {
-      if (items.IsCompleted) {
-        continue;
-      }
       sum += parseInt(items.Progress) / 100;
       count++;
     }
@@ -158,7 +156,6 @@ module.exports.GetAgenda = async (req, res) => {
     const Agenda = [];
 
     for (const item of Streams) {
-      if (Date.now() > item.Date) continue;
       Agenda.push({
         start: item.Date,
         title: item?.Lesson.Title,
@@ -207,8 +204,8 @@ module.exports.GetSoldCoursesPerMonth = async (req, res) => {
 module.exports.GetBestTeacherCourses = async (req, res) => {
   try {
     const Courses = res.locals.Courses;
-    const sorted = Courses.sort((p1, p2) =>
-      p1.Rating > p2.Rating ? -1 : p2.Rating > p1.Rating ? 1 : 0
+    const sorted = Courses.filter((course) => course.IsLive === false).sort(
+      (p1, p2) => (p1.Rating > p2.Rating ? -1 : p2.Rating > p1.Rating ? 1 : 0)
     );
     const top5 = sorted.slice(0, 5);
     res.status(200).json({

@@ -12,7 +12,14 @@ module.exports.getBootCamps = async (req, res) => {
       );
       Result = { All: All || [], Owned: Owned || [] };
     } else if (userRole === "Teacher") {
-      const Owned = await Course.find({ Teacher: userId }).populate("BootCamp");
+      const courses = await Course.find({
+        Teacher: userId,
+        IsLive: true,
+      }).populate("BootCamp");
+      let list = courses.map((course) => course.BootCamp);
+      const set = new Set(list);
+      let Owned = Array.from(set);
+      Owned = Owned.map((item) => ({ BootCamp: item }));
       Result = { Owned: Owned || [] };
     } else {
       return res.status(400).json({ message: "Error Happened" });
@@ -39,10 +46,12 @@ module.exports.GetCamp = async (req, res) => {
         BootCamp: CampId,
         Student: userId,
       });
-      const Courses = await Course.find({ BootCamp: CampId }).populate({
-        path: "Lessons",
-        populate: "Streams",
-      });
+      const Courses = await Course.find({ BootCamp: CampId })
+        .populate({
+          path: "Lessons",
+          populate: "Streams",
+        })
+        .populate("Teacher");
       if (studentCamp.length === 1) {
         Result = {
           ...Result,
@@ -55,7 +64,20 @@ module.exports.GetCamp = async (req, res) => {
         };
       }
 
-      Result = { NumCourses: Courses.length, ...Result };
+      Result = { NumCourses: Courses.length, ...Result, Streams: Courses };
+    } else if (userRole === "Teacher") {
+      const Courses = await Course.find({
+        BootCamp: CampId,
+        Teacher: userId,
+      })
+        .populate({
+          path: "Lessons",
+          populate: "Streams",
+        })
+        .populate("Teacher");
+      if (Courses) {
+        Result = { ...Result, Courses: Courses || [] };
+      }
     }
     return res.status(200).json({ message: "camp found successfuly", Result });
   } catch (error) {

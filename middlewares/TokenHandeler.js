@@ -4,7 +4,7 @@ const { TokenSecretCode } = require("../core/env");
 //test
 module.exports.TokenVerification = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
       return res.status(401).json({ msg: "No auth token, access denied" });
     }

@@ -15,14 +15,14 @@ module.exports.GetCourses = async (req, res) => {
     let courses = [];
     let AllCourses = null;
     if (userRole == "Student") {
-      const EveryCourse = await Course.find();
+      const EveryCourse = await Course.find({ IsLive: false });
       AllCourses = EveryCourse;
       const Student_Courses = await Student_Course.find({
         Student: userId,
-      }).populate("Course");
+      }).populate({ path: "Course", match: { IsLive: false } });
       courses = Student_Courses;
     } else if (userRole == "Teacher") {
-      courses = await Course.find({ Teacher: userId });
+      courses = await Course.find({ Teacher: userId, IsLive: false });
     } else {
       return res.status(401).json({ msg: "you have no access to this page" });
     }
@@ -53,13 +53,29 @@ module.exports.GetCourses = async (req, res) => {
 module.exports.GetCourse = async (req, res) => {
   // Get the course ID from the request query parameters
   const courseID = req.query.Id;
+  const userRole = res.locals.userRole;
+  const userId = res.locals.userId;
 
   try {
     // Find the course by its ID using the Course model's findById method
     const course = await Course.findById(courseID)
       .populate({ path: "Teacher", select: "FullName _id" })
       .populate("Lessons");
-
+    let Result = course?.toJSON();
+    if (userRole === "Student") {
+      const studentCourse = await Student_Course.findOne({
+        Course: courseID,
+        Student: userId,
+      });
+      if (studentCourse) {
+        Result = {
+          ...Result,
+          StudentRating: studentCourse?.Rating,
+          Progress: studentCourse.Progress,
+          CompletedLessons: studentCourse.FinishedLessons,
+        };
+      }
+    }
     // If the course is not found, return a 404 status code with an error message
     if (!course) {
       return res
@@ -71,7 +87,7 @@ module.exports.GetCourse = async (req, res) => {
     return res.status(200).json({
       message: "course found successfully",
       details: "course will be in Result as one object",
-      Result: course,
+      Result,
     });
   } catch (error) {
     // If there is an error, log it and return a 500 status code with an error message
@@ -435,6 +451,35 @@ module.exports.GetTeacherLessons = async (req, res) => {
     res
       .status(200)
       .json({ message: "lessons found successfully", Result: Lessons });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ msg: "Server Error" });
+  }
+};
+
+module.exports.FinishLesson = async (req, res) => {
+  const userRole = res.locals.userRole;
+  const userId = res.locals.userId;
+  const CourseId = req.query.CourseId;
+  const LessonId = req.query.LessonId;
+  try {
+    const studentCourse = await Student_Course.findOne({
+      Student: userId,
+      Course: CourseId,
+    }).populate("Course");
+    if (!studentCourse) {
+      return res.status(404).json({ message: "student have no access" });
+    }
+    studentCourse.FinishedLessons = [
+      ...studentCourse.FinishedLessons,
+      LessonId,
+    ];
+    studentCourse.Progress =
+      (studentCourse.FinishedLessons.length /
+        studentCourse.Course.Lessons.length) *
+      100;
+    studentCourse.save();
+    return res.status(200).json({ message: "successfull update" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ msg: "Server Error" });

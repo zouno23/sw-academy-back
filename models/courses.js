@@ -122,6 +122,7 @@ const StudentCourseSchema = new Schema({
     max: 100,
     default: 0,
   },
+  FinishedLessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }],
   IsCompleted: { type: Boolean, default: false },
   DateCompleted: { type: Date, defaul: null },
   Rating: { type: Number, min: 0, max: 5, default: null },
@@ -139,6 +140,11 @@ StudentCourseSchema.pre("save", async function (next) {
     course.Sellings += 1;
     course.save();
   }
+  if (this.Progress === 100 && !this.IsCompleted) {
+    this.DateCompleted = Date.now();
+    this.IsCompleted = true;
+  }
+
   next();
 });
 StudentCourseSchema.pre("deleteOne", async function (next) {
