@@ -41,6 +41,10 @@ const studentSchema = new Schema({
     },
   ],
   Certificates: [{ type: Schema.Types.ObjectId, ref: "Certificate" }],
+  Quiz: {
+    ScoreTotal: { type: Number },
+    QuizList: [{ date: { type: Date }, score: { type: Number } }],
+  },
 });
 
 studentSchema.pre("save", async function (next) {
